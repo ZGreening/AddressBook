@@ -116,9 +116,6 @@ public class AddressBookGUI extends JFrame {
                 return;
             }
             currentFile = jfc.getSelectedFile();
-            if (currentFile == null) {
-                return;
-            }
             if (currentFile.exists() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to overwrite this file?", "Are you sure?", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE)) {

@@ -34,6 +34,7 @@ import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.awt.event.KeyEvent.VK_T;
 import static java.awt.event.KeyEvent.VK_Y;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -53,19 +54,20 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.finder.WindowFinder;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.FrameFixture;
+import org.assertj.swing.security.NoExitSecurityManagerInstaller;
 import org.junit.Rule;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
-//NOTE: Due to a bug in AssertJ/JDK, this entire class's
-//tests fail on MacOS systems. This is because of the way
-//the system simulates clicks on the GUI. It depends on the OS
-//which currently is not able to correctly determine a Mac platform.
+//NOTE: Due to a bug(s) in AssertJ/JDK, this entire class's
+//tests fail on MacOS systems. This is partly because of the way
+//the system simulates clicks on the GUI. It requires special
+//security permissions to access the mouse and keyboard.
 //SEE: https://github.com/joel-costigliola/assertj-swing/issues/25
-//Modern Macs are branded as "macOS" not "OS X"
 public class AddressBookGUITest {
 
     @Rule
@@ -75,6 +77,9 @@ public class AddressBookGUITest {
 
     @BeforeAll
     public static void init() {
+        //Prevent program exiting
+        NoExitSecurityManagerInstaller.installNoExitSecurityManager();
+        
         // Required for full AssertJ GUI testing
         FailOnThreadViolationRepaintManager.install();
     }
@@ -108,6 +113,12 @@ public class AddressBookGUITest {
         window.cleanUp();
     }
 
+    @AfterAll
+    public static void clean() {
+        //Re-enable program to close after testing completes
+        NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     //                                  TESTS                                //
     ///////////////////////////////////////////////////////////////////////////
@@ -116,7 +127,7 @@ public class AddressBookGUITest {
     public void canCreateNewPerson() {
         // Click and get dialog window
         window.button("add").click();
-        DialogFixture dialog = WindowFinder.findDialog(PersonDialog.class).using(window.robot());
+        DialogFixture dialog = window.dialog();
 
         // Type 'John','Doe','1234 SomeStreet','SomeCity','FL','12345', and '1234567890'
         // into the respective boxes
@@ -154,7 +165,7 @@ public class AddressBookGUITest {
         window.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = WindowFinder.findDialog(PersonDialog.class).using(window.robot());
+        DialogFixture dialog = window.dialog();
 
         // Test person gets fully loaded
         dialog.textBox("firstName").requireText("John");
@@ -165,17 +176,15 @@ public class AddressBookGUITest {
         dialog.textBox("zip").requireText("12345");
         dialog.textBox("phone").requireText("1234567890");
 
-        // Change John's Phone number to '0987654321'
-        dialog.textBox("phone").click();
-        dialog.textBox("phone").deleteText();
-        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's zip to '54321'
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Test that the table contains the updated data
         window.table().requireContents(
-                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "12345", "0987654321" },
+                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "54321", "1234567890" },
                         { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
@@ -200,6 +209,84 @@ public class AddressBookGUITest {
 
         // Test that only one row remains
         window.table().requireRowCount(1);
+    }
+
+    @Test
+    public void canCreateNewPersonCancelled() {
+        // Click and get dialog window
+        window.button("add").click();
+        DialogFixture dialog = window.dialog();
+
+        // Type 'John'
+        dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_J).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_O, VK_H, VK_N);
+       
+        // Click 'Cancel'
+        dialog.button(JButtonMatcher.withText("Cancel")).click();
+
+        // Test person is not added
+        window.table().requireRowCount(0);
+    }
+
+    @Test
+    public void canEditPersonCancelled() {
+        // Load sample address Book
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Click 'John Doe' test person entry and click 'Edit'
+        window.table().cell("John").click();
+        window.button("edit").click();
+
+        // Get the person dialog
+        DialogFixture dialog = window.dialog();
+        
+        // Change John's zip to '54321'
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("Cancel")).click();
+
+        // Test that the table is the same as the test file (Unchanged)
+        window.table().requireContents(
+                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" },
+                        { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
+    }
+
+    @Test
+    public void canEditPersonNoRowSelected() {
+        // Load sample address Book
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+        
+        //Click edit button for no window
+        window.button("edit").click();
+
+        //Test that the edit button on the main menu
+        // is still focused indicating nothing was opened
+        window.button("edit").requireFocused();
+    }
+
+    @Test
+    public void canDeletePersonNoRowSelected() {
+        // Click 'open' item
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Check table now has the two persons in file
+        window.table().requireRowCount(2);
+
+        // Click 'delete'
+        window.button("delete").click();
+
+        // Test that only both rows remain
+        window.table().requireRowCount(2);
     }
 
     @Test
@@ -266,6 +353,64 @@ public class AddressBookGUITest {
     }
 
     @Test
+    public void canOpenExistingBookCancelled() {
+        // Check that open item is clickable
+        window.menuItem("open").requireEnabled();
+
+        // Click 'open' item
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+
+        // Get the file chooser and select the file saved
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().cancel();
+
+        // Check table now has the two persons in file
+        window.table().requireRowCount(0);
+    }
+
+    @Test
+    public void canSaveNewBookOverAnother() {
+        //Add a person to a new book
+        window.button("add").click();
+        DialogFixture dialog = window.dialog();
+
+        // Type 'John','Doe','1234 SomeStreet','SomeCity','FL','12345', and '1234567890'
+        // into the respective boxes
+        dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_J).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_O, VK_H, VK_N);
+        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_O, VK_E);
+        dialog.textBox("address").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_SPACE).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_M, VK_E).pressKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
+        dialog.textBox("city").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_O, VK_M, VK_E).pressKey(VK_SHIFT).pressAndReleaseKeys(VK_C).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_I, VK_T, VK_Y);
+        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
+        dialog.textBox("zip").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5);
+        dialog.textBox("phone").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5, VK_6, VK_7, VK_8, VK_9, VK_0);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        //Make sure save and saveAs are enabled
+        window.menuItem("save").requireEnabled();
+        window.menuItem("saveAs").requireEnabled();
+
+        //Click 'save'
+        window.menuItem("file").click();
+        window.menuItem("save").click();
+
+        //Save over test file
+        window.fileChooser().selectFile(testFile);
+        window.fileChooser().approve();
+
+        //Check that question message is shown for overwriting a book
+        window.optionPane().requireQuestionMessage();
+    }
+
+    @Test
     public void canSaveEditedBook() throws IOException {
         // Load sample address Book
         window.menuItem("file").click();
@@ -278,12 +423,10 @@ public class AddressBookGUITest {
         window.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = WindowFinder.findDialog(PersonDialog.class).using(window.robot());
+        DialogFixture dialog = window.dialog();
 
         // Edit the person
-        dialog.textBox("phone").click();
-        dialog.textBox("phone").deleteText();
-        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Check save button is active
@@ -300,6 +443,37 @@ public class AddressBookGUITest {
         // Test file exists
         File file = new File(folder.getRoot() + "/test file");
         assertTrue(file.exists());
+    }
+
+    @Test
+    public void canSaveEditedBookCancelled() throws IOException {
+        // Load sample address Book
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Click 'John Doe' test person entry and click 'Edit'
+        window.table().cell("John").click();
+        window.button("edit").click();
+
+        // Get the person dialog
+        DialogFixture dialog = window.dialog();
+
+        // Edit the person
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Click 'save' and cancel
+        window.menuItem("file").click();
+        window.menuItem("saveAs").click();
+        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox().pressAndReleaseKeys(VK_T, VK_E,
+                VK_S, VK_T, VK_SPACE, VK_F, VK_I, VK_L, VK_E);
+        window.fileChooser().cancel();
+
+        // Test file does not exists
+        File file = new File(folder.getRoot() + "/test file");
+        assertFalse(file.exists());
     }
 
     @Test
@@ -331,12 +505,10 @@ public class AddressBookGUITest {
         window.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = WindowFinder.findDialog(PersonDialog.class).using(window.robot());
+        DialogFixture dialog = window.dialog();
 
-        // Change John's Phone number to '0987654321'
-        dialog.textBox("phone").click();
-        dialog.textBox("phone").deleteText();
-        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's zip to '54321'
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
@@ -362,17 +534,15 @@ public class AddressBookGUITest {
         window.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = WindowFinder.findDialog(PersonDialog.class).using(window.robot());
+        DialogFixture dialog = window.dialog();
 
-        // Change John's Phone number to '0987654321'
-        dialog.textBox("phone").click();
-        dialog.textBox("phone").deleteText();
-        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's zip to '54321'
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
-        // Click 'Open' and load testfile again
+        // Click 'Open' and load test file again
         window.menuItem("file").click();
         window.menuItem("open").click();
 
@@ -381,7 +551,7 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void confirmDialogShowsOnQuit() {
+    public void confirmDialogShowsOnQuitConfirm() {
         // Load sample address Book
         window.menuItem("file").click();
         window.menuItem("open").click();
@@ -393,22 +563,54 @@ public class AddressBookGUITest {
         window.button("edit").click();
 
         // Get the person dialog
-        DialogFixture dialog = WindowFinder.findDialog(PersonDialog.class).using(window.robot());
+        DialogFixture dialog = window.dialog();
 
-        // Change John's Phone number to '0987654321'
-        dialog.textBox("phone").click();
-        dialog.textBox("phone").deleteText();
-        dialog.textBox("phone").pressAndReleaseKeys(VK_0, VK_9, VK_8, VK_7, VK_6, VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's zip to '54321'
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
-        // Click 'Open' and load testfile again
+        // Click 'quit'
         window.menuItem("file").click();
         window.menuItem("quit").click();
 
         // Test that a question message is shown
         window.optionPane().requireQuestionMessage();
+
+        //Test closing works
+        window.optionPane().buttonWithText("Yes").click();
+    }
+
+    @Test
+    public void confirmDialogShowsOnWindowCloseCancel() {
+        // Load sample address Book
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Click 'John Doe' test person entry and click 'Edit'
+        window.table().cell("John").click();
+        window.button("edit").click();
+
+        // Get the person dialog
+        DialogFixture dialog = window.dialog();
+
+        // Change John's zip to '54321'
+        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Close window
+        window.close();
+
+        // Test that a question message is shown
+        window.optionPane().requireQuestionMessage();
+
+        //Test cancelling works
+        window.optionPane().buttonWithText("No").click();
     }
 
     @Test
