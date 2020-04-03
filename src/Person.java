@@ -1,3 +1,4 @@
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 //Click on Person, press Ctrl+Shift+T
@@ -14,12 +15,43 @@ public class Person {
     private String zip;
     private String phone;
 
+    boolean checkRegex(String name,String regex){
+        //String patternString;
+
+        Pattern pattern = Pattern.compile(regex);
+
+        Matcher matcher = pattern.matcher(name);
+        return matcher.matches();
+
+    }
+
     public Person(String firstName, String lastName, String address, String city, String state, String zip,
             String phone) {
         if (firstName == null || firstName.isEmpty())
             throw new IllegalArgumentException("First name cannot be empty");
         if (lastName == null || lastName.isEmpty())
             throw new IllegalArgumentException("Last name cannot be empty");
+        //Check if first name passes regex
+        if (checkRegex(firstName,"\\S{2,}")== false){
+            //Name didn't pass regex, send error
+            throw new IllegalArgumentException("First Name have 2 characters.");
+        }
+        if (checkRegex(lastName,"\\S{2,}")== false){
+            //Name didn't pass regex, send error
+            throw new IllegalArgumentException("Last Name have 2 characters.");
+        }
+
+
+        if(checkRegex(state,"[A-Z]{2,2}") == false){
+            throw new IllegalArgumentException("State Must be 2 Characters");
+        }
+        if(checkRegex(zip,"\\d{5}") == false){
+            throw new IllegalArgumentException("ZipCode Must be 5 numbers");
+        }
+        //9 or 10 numbers?
+        if(checkRegex(phone,"\\d{10}") == false){
+            throw new IllegalArgumentException("Phone Number Must be 10 numbers");
+        }
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;

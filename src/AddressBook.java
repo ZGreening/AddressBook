@@ -1,15 +1,24 @@
-import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.table.AbstractTableModel;
+
 
 public class AddressBook extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private List<Person> persons = new ArrayList<>();
-
+    //Called After saving programming after changes.
+    //This will copy crrent Persons array to a new array which will place person data
+    //into the database
+    //used by FileSystem
+    //This converts arraylist to an array.
     public Person[] getPersons() {
-        return persons.toArray(new Person[persons.size()]);
+
+        return persons.toArray(
+            new Person[persons.size()]
+        );
     }
 
+    //This method adds new PErson object to Address Book
     public void add(Person p) {
         int newIndex = persons.size();
         persons.add(p);
@@ -60,7 +69,6 @@ public class AddressBook extends AbstractTableModel {
     public int getColumnCount() {
         return Person.fields.length;
     }
-
     @Override
     public Object getValueAt(int row, int column) {
         return persons.get(row).getField(column);
