@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Nullable;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -104,10 +102,8 @@ public class PersonDialog extends JDialog {
         setLocation((parent.getWidth() - getWidth()) / 2, (parent.getHeight() - getHeight()) / 2);
     }
 
-    public PersonDialog(Frame parent, @Nullable Person person) {
+    public PersonDialog(Frame parent, Person person) {
         this(parent);
-        if (person == null)
-            return;
         firstName.setText(person.getFirstName());
         lastName.setText(person.getLastName());
         address.setText(person.getAddress());
@@ -125,10 +121,10 @@ public class PersonDialog extends JDialog {
     }
 
     public Person getPerson() {
-        if (firstName != null && lastName != null && !firstName.getText().isEmpty() && !lastName.getText().isEmpty()) {
+        try {
             return new Person(firstName.getText(), lastName.getText(), address.getText(), city.getText(),
                     state.getText(), zip.getText(), phone.getText());
-        } else {
+        } catch(IllegalArgumentException exception) {
             return null;
         }
     }
