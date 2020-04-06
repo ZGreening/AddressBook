@@ -39,6 +39,7 @@ class PersonDialogTest {
         AddressBookGUI frame = GuiActionRunner.execute(() -> new AddressBookGUI());
         window = new FrameFixture(frame);
         window.show();
+        window.button("add").click();
     }
 
     @AfterEach
@@ -52,14 +53,15 @@ class PersonDialogTest {
         // Re-enable program to close after testing completes
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
     }
+    ///////////////////////////////// Unit Tests //////////////////////////////////
    
+
     /**
      * This tests that a person can be added.
      */
 
     @Test
     void addPersonValid() {
-        window.button("add").click();
         DialogFixture dialog = window.dialog();
 
         // Type 'Muffin','Man','1234 Dreary Lane','Cookie City','WA','66666', and '1234567890'
@@ -94,9 +96,7 @@ class PersonDialogTest {
     @Test
     void addPersonInvalid() {
         // Test when user exits with OK
-        window.button("add").click();
         DialogFixture dialog = window.dialog();
-
         dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_1).releaseKey(VK_SHIFT)
             .pressAndReleaseKeys(VK_2, VK_2, VK_4, VK_5, VK_6);
         
@@ -113,9 +113,8 @@ class PersonDialogTest {
 
 
     @Test
-    void addPersonNullFirst() {
+    void addPersonInvalidFirst() {
         // Test when user exits with OK
-        window.button("add").click();
         DialogFixture dialog = window.dialog();
 
         dialog.textBox("firstName").pressKey(VK_SPACE);
@@ -132,7 +131,6 @@ class PersonDialogTest {
     @Test
     void addPersonMixedInvlaid() {
         // Test first name valid and lastname invalid when user exits with OK
-        window.button("add").click();
         DialogFixture dialog = window.dialog();
 
         dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
@@ -165,9 +163,8 @@ class PersonDialogTest {
     // }
 
     @Test
-    void addPersonNull() {
+    void addPersonEmpty() {
         // Test when user exits with OK
-        window.button("add").click();
         DialogFixture dialog = window.dialog();
 
         // Click 'OK'
@@ -200,5 +197,7 @@ class PersonDialogTest {
     //     PersonDialog nullDialog = new PersonDialog(frame, null);
 
     // }
+
+
 
 }
