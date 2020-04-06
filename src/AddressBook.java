@@ -52,8 +52,13 @@ public class AddressBook extends AbstractTableModel {
         if (persons == null || persons.size() == 0) {
             return;
         }
-        fireTableRowsDeleted(0, persons.size() - 1);
+
+        //Clear persons first
+        int lastRow=persons.size()-1;
         persons.clear();
+
+        //Delete table rows
+        fireTableRowsDeleted(0, lastRow);
     }
 
     @Override

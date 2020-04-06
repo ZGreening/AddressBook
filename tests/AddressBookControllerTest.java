@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
@@ -137,7 +135,7 @@ class AddressBookControllerTest {
 
   @Rule
   public static TemporaryFolder folder = new TemporaryFolder();
-  private static AddressBook addressBook = null; //An generic address book
+  // private static AddressBook addressBook = null; //An generic address book
   private static FileSystem fileSystem=null; //The file system for testing
   private static File file = null;           //A java file for testing
 
