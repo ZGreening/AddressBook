@@ -155,9 +155,7 @@ public class AddressBookGUI extends JFrame {
             }
 
             @Override
-            public void changedUpdate(DocumentEvent e) {
-                filter();
-            }
+            public void changedUpdate(DocumentEvent e) { }
 
             public void filter() {
                 tableRowSorter.setRowFilter(RowFilter.regexFilter("(?iu)" + Pattern.quote(searchTextField.getText())));

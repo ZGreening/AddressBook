@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
 import static java.awt.event.KeyEvent.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
@@ -21,6 +22,7 @@ class PersonDialogTest {
 
     @Rule
     private static DialogFixture window = null;
+    private static PersonDialog personDialog = null;
     public static TemporaryFolder folder = new TemporaryFolder();
 
     @BeforeAll
@@ -35,8 +37,8 @@ class PersonDialogTest {
     @BeforeEach
     void setUp() throws IOException, ClassNotFoundException {
         // Initialize window
-        PersonDialog frame = GuiActionRunner.execute(() -> new PersonDialog(new JFrame()));
-        window = new DialogFixture(frame);
+        personDialog = GuiActionRunner.execute(() -> new PersonDialog(new JFrame()));
+        window = new DialogFixture(personDialog);
         window.show();
     }
 
@@ -51,15 +53,15 @@ class PersonDialogTest {
         // Re-enable program to close after testing completes
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
     }
-    ///////////////////////////////// Unit Tests //////////////////////////////////
 
-    /**
-     * This tests that a person can be added.
-     */
+    ///////////////////////////////////////////////////////////////////////////
+    //                              UNIT TESTS                               //
+    ///////////////////////////////////////////////////////////////////////////
 
     @Test
-    void addPersonValid() {
-        // Type 'Muffin','Man','1234 Dreary Lane','Cookie City','WA','66666', and '1234567890'
+    void getValidPerson() {
+        // Type 'Muffin','Man','1234 Dreary Lane','Cookie City','WA','66666', and
+        // '1234567890'
         // into the respective boxes
         window.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_U, VK_F, VK_F, VK_I, VK_N);
@@ -76,108 +78,68 @@ class PersonDialogTest {
         window.textBox("zip").pressAndReleaseKeys(VK_6, VK_6, VK_6, VK_6, VK_6);
         window.textBox("phone").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5, VK_6, VK_7, VK_8, VK_9, VK_0);
 
-        // Click 'OK'
+        // Test Get Person for a valid person
+        Person person = personDialog.getPerson();
+
+        // Check persons values
+        assertEquals(person.getFirstName(), "Muffin");
+        assertEquals(person.getLastName(), "Man");
+        assertEquals(person.getAddress(), "1234 Dreary Lane");
+        assertEquals(person.getCity(), "Cookie City");
+        assertEquals(person.getState(), "WA");
+        assertEquals(person.getZip(), "66666");
+        assertEquals(person.getPhone(), "1234567890");
+
+        // Click 'OK' (execute lambda)
         window.button(JButtonMatcher.withText("OK")).click();
+
+        // Check dialog result is OK
+        assertEquals(personDialog.showDialog(), PersonDialog.Result.OK);
     }
 
-    /**
-     * This tests that a person cannot be added with improper characters.
-     */
-
-    /*@Test
+    @Test
     void addPersonInvalid() {
-        // Test when user exits with OK
-        DialogFixture dialog = window.dialog();
-        dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_1).releaseKey(VK_SHIFT)
+        // Create person with numbers in place of person's name
+        window.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_1).releaseKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_2, VK_2, VK_4, VK_5, VK_6);
-
-        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_9, VK_7);
-
-        // Click 'OK'
-        dialog.button(JButtonMatcher.withText("OK")).click();
-
-        // Test person is not added
-        window.table().requireRowCount(0);
-
-    }*/
-
-    /*@Test
-    void addPersonInvalidFirst() {
-        // Test when user exits with OK
-        dialog.textBox("firstName").pressKey(VK_SPACE);
-
-        // Click 'OK'
-        dialog.button(JButtonMatcher.withText("OK")).click();
-    }*/
-
-    /*@Test
-    void addPersonMixedInvlaid() {
-        // Test first name valid and lastname invalid when user exits with OK
-        window.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_U, VK_F, VK_F, VK_I, VK_N);
         window.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
                 .pressAndReleaseKeys(VK_9, VK_7);
 
+        // Check persons is null
+        assertEquals(personDialog.getPerson(), null);
+
         // Click 'OK'
         window.button(JButtonMatcher.withText("OK")).click();
-    }*/
 
-    // @Test
-    // void addPersonMixedInvlaid2() {
-    // // Test when user exits with OK
-    // window.button("add").click();
-    // DialogFixture dialog = window.dialog();
+        // Check dialog result is OK
+        assertEquals(personDialog.showDialog(), PersonDialog.Result.OK);
+    }
 
-    // dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_1).releaseKey(VK_SHIFT)
-    // .pressAndReleaseKeys(VK_2, VK_2, VK_4, VK_5, VK_6);
-    // //
-    // dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
-    // // .pressAndReleaseKeys(VK_A, VK_N);
+    @Test
+    void addPersonCancel() {
+        // Fill first name then cancel
+        window.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
+                .pressAndReleaseKeys(VK_U, VK_F, VK_F, VK_I, VK_N);
 
-    // // Click 'OK'
-    // dialog.button(JButtonMatcher.withText("OK")).click();
+        // Click 'Cancel'
+        window.button(JButtonMatcher.withText("Cancel")).click();
 
-    // }
-
-    /*@Test
-    void addPersonEmpty() {
-        // Test when user exits with OK
-        DialogFixture dialog = window.dialog();
-
-        // Click 'OK'
-        dialog.button(JButtonMatcher.withText("OK")).click();
-
-        // Test person is not added
-        window.table().requireRowCount(0);
-
-    }*/
-
-    // @Test
-    // void addPersonCancel() {
-    // // Test when user exits with Cancel
-    // window.button("add").click();
-    // DialogFixture dialog = window.dialog();
-
-    // dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_M).releaseKey(VK_SHIFT)
-    // .pressAndReleaseKeys(VK_U, VK_F, VK_F, VK_I, VK_N);
-
-    // // Click 'OK'
-    // dialog.button(JButtonMatcher.withText("Cancel")).click();
-
-    // }
+        // Check dialog result is Cancel
+        assertEquals(personDialog.showDialog(), PersonDialog.Result.CANCEL);
+    }
 
     @Test
     void openWithPerson() {
-        //Close empty window
+        // Close empty window
         window.cleanUp();
 
-        //Open window with person
-        PersonDialog frame = GuiActionRunner.execute(() -> new PersonDialog(new JFrame(),new Person("John","Doe","123 Fake Street","Fort Myers","FL","33901","0123456789")));
+        // Open window with person
+        PersonDialog frame = GuiActionRunner.execute(() -> new PersonDialog(new JFrame(),
+                new Person("John", "Doe", "123 Fake Street", "Fort Myers", "FL", "33901", "0123456789")));
         window = new DialogFixture(frame);
         window.show();
 
-        //Check that required fields have been filled
+        // Check that required fields have been filled
         window.textBox("firstName").requireText("John");
         window.textBox("lastName").requireText("Doe");
         window.textBox("address").requireText("123 Fake Street");
