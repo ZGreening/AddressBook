@@ -128,10 +128,12 @@ public class AddressBookGUI extends JFrame {
             if (JFileChooser.APPROVE_OPTION != jfc.showSaveDialog(this)) {
                 return;
             }
+            File tempFile = currentFile;
             currentFile = jfc.getSelectedFile();
             if (currentFile.exists() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to overwrite this file?", "Are you sure?", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE)) {
+                currentFile = tempFile; // Restore old state of current file to prevent accidental overwrites later on
                 return;
             }
             saveItem.doClick();

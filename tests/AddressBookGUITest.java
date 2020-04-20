@@ -1,6 +1,7 @@
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -27,7 +28,6 @@ import org.assertj.swing.security.NoExitSecurityManagerInstaller;
 import org.junit.Rule;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
@@ -45,17 +45,14 @@ public class AddressBookGUITest {
     private static FrameFixture window = null;
     private static AddressBookGUI addressBookGUI = null;
 
-    @BeforeAll
-    public static void init() {
+    @BeforeEach
+    public void initEach() throws IOException, ClassNotFoundException {
         // Prevent program exiting
         NoExitSecurityManagerInstaller.installNoExitSecurityManager();
 
         // Required for full AssertJ GUI testing
         FailOnThreadViolationRepaintManager.install();
-    }
 
-    @BeforeEach
-    public void initEach() throws IOException, ClassNotFoundException {
         // Initialize window
         addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI());
         window = new FrameFixture(addressBookGUI);
@@ -90,7 +87,7 @@ public class AddressBookGUITest {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    // TESTS //
+    //                                TESTS                                  //
     ///////////////////////////////////////////////////////////////////////////
 
     @Test
@@ -115,6 +112,26 @@ public class AddressBookGUITest {
         // Test person is added
         window.table().requireRowCount(1);
 
+        // Test the values match
+        window.table().requireContents(
+                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
+    }
+
+    @Test
+    public void cantCreateBadNewPerson() {
+        // Click and get dialog window
+        window.button("add").click();
+        DialogFixture dialog = window.dialog();
+
+        // Type just 'John','Doe'
+        dialog.textBox("firstName").enterText("John");
+        dialog.textBox("lastName").enterText("Doe");
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test that there are still no people
+        window.table().requireRowCount(0);
     }
 
     @Test
@@ -174,6 +191,10 @@ public class AddressBookGUITest {
 
         // Test that only one row remains
         window.table().requireRowCount(1);
+
+        // Check only person existing is not John
+        window.table().requireContents(
+                new String[][] { { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
     @Test
@@ -206,7 +227,7 @@ public class AddressBookGUITest {
 
         // Get the person dialog
         DialogFixture dialog = window.dialog();
-        
+
         // Change John's state to 'GA'
         dialog.textBox("state").click().deleteText().enterText("GA");
 
@@ -249,7 +270,7 @@ public class AddressBookGUITest {
         // Click 'delete'
         window.button("delete").click();
 
-        // Test that only both rows remain
+        // Test that both rows remain
         window.table().requireRowCount(2);
     }
 
@@ -329,7 +350,7 @@ public class AddressBookGUITest {
         window.fileChooser().selectFile(testFile.getAbsoluteFile());
         window.fileChooser().cancel();
 
-        // Check table now has the two persons in file
+        // Check table still has no people
         window.table().requireRowCount(0);
     }
 
@@ -366,6 +387,23 @@ public class AddressBookGUITest {
 
         // Check that question message is shown for overwriting a book
         window.optionPane().requireQuestionMessage();
+
+        // Select 'No'
+        window.dialog().button(JButtonMatcher.withText("No")).click();
+
+        // Click 'save' again
+        window.menuItem("file").click();
+        window.menuItem("save").click();
+
+        // Save over test file
+        window.fileChooser().selectFile(testFile);
+        window.fileChooser().approve();
+
+        // Check that question message is shown for overwriting a book
+        window.optionPane().requireQuestionMessage();
+
+        // Select 'Yes' this time
+        window.dialog().button(JButtonMatcher.withText("Yes")).click();
     }
 
     @Test
@@ -450,18 +488,18 @@ public class AddressBookGUITest {
 
     @Test
     public void errorShowsOnPrintFail() throws PrinterException {
-        //Clear the started program
+        // Clear the started program
         window.cleanUp();
 
-        //Remove edtViolationException trigger for creating mocks
+        // Remove edtViolationException trigger for creating mocks
         FailOnThreadViolationRepaintManager.uninstall();
 
-        //Set table to throw exception
-        JTable tableMock=mock(JTable.class);
+        // Set table to throw exception
+        JTable tableMock = mock(JTable.class);
         doThrow(new PrinterException("A print error has occurred")).when(tableMock).print();
         addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI(tableMock));
 
-        //Start the application with the injected mocks
+        // Start the application with the injected mocks
         window = new FrameFixture(addressBookGUI);
         window.show();
 
@@ -479,24 +517,24 @@ public class AddressBookGUITest {
         window.optionPane().requireWarningMessage();
     }
 
-    //NOTE: this test will appear to display incorrectly while running.
-    //This is due to the way the GUI has been replaced. The test still
-    //functions correctly
+    // NOTE: this test will appear to display incorrectly while running.
+    // This is due to the way the GUI has been replaced. The test still
+    // functions correctly
     @Test
     public void errorShowsOnSaveFail() throws SQLException {
-        //Clear the started program
+        // Clear the started program
         window.cleanUp();
 
-        //Remove edtViolationException trigger for creating spies
+        // Remove edtViolationException trigger for creating spies
         FailOnThreadViolationRepaintManager.uninstall();
 
-        //Set table to throw exception
-        AddressBook addressBookSpy=spy(new AddressBook());
-        AddressBookController controllerSpy=spy(new AddressBookController(addressBookSpy));
+        // Set table to throw exception
+        AddressBook addressBookSpy = spy(new AddressBook());
+        AddressBookController controllerSpy = spy(new AddressBookController(addressBookSpy));
         doThrow(new SQLException("An error occurred during save")).when(controllerSpy).save(isA(File.class));
-        addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI(addressBookSpy,controllerSpy));
-        
-        //Start the application with the injected spies
+        addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI(addressBookSpy, controllerSpy));
+
+        // Start the application with the injected spies
         window = new FrameFixture(addressBookGUI);
         window.show();
 
@@ -558,6 +596,19 @@ public class AddressBookGUITest {
 
         // Test that a question message is shown
         window.optionPane().requireQuestionMessage();
+
+        // Select 'No'
+        window.dialog().button(JButtonMatcher.withText("No")).click();
+
+        // Click 'New' again
+        window.menuItem("file").click();
+        window.menuItem("new").click();
+
+        // Test that a question message is shown
+        window.optionPane().requireQuestionMessage();
+
+        // Select 'Yes' this time
+        window.dialog().button(JButtonMatcher.withText("Yes")).click();
     }
 
     @Test
@@ -581,17 +632,48 @@ public class AddressBookGUITest {
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
-        // Click 'Open' and load test file again
+        // Click 'Open'
         window.menuItem("file").click();
         window.menuItem("open").click();
 
         // Test that a question message is shown
         window.optionPane().requireQuestionMessage();
+
+        // Select 'No'
+        window.dialog().button(JButtonMatcher.withText("No")).click();
+
+        // Click 'Open' again
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+
+        // Test that a question message is shown
+        window.optionPane().requireQuestionMessage();
+
+        // Select 'Yes' this time
+        window.dialog().button(JButtonMatcher.withText("Yes")).click();
+    }
+
+    @Test
+    public void noConfirmDialogIfNothingChanged() {
+        // Load sample address Book
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Click 'quit'
+        window.menuItem("file").click();
+        window.menuItem("quit").click();
+
+        // Test that no option pane was shown (a component lookup of option pane will
+        // fail)
+        assertThrows(Exception.class, () -> window.optionPane());
     }
 
     @Test
     public void confirmDialogShowsOnQuitCancel() {
-        //Remove no exit so that window dispatch event line can run (Needed for 100% statement coverage)
+        // Remove no exit so that window dispatch event line can run (Needed for 100%
+        // statement coverage)
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
 
         // Load sample address Book
@@ -620,13 +702,12 @@ public class AddressBookGUITest {
         // Test that a question message is shown
         window.optionPane().requireQuestionMessage();
 
-        //Test closing works
+        // Test closing works
         window.optionPane().buttonWithText("No").click();
     }
 
     @Test
     public void confirmDialogShowsOnWindowCloseConfirm() {
-
         // Load sample address Book
         window.menuItem("file").click();
         window.menuItem("open").click();
@@ -652,7 +733,7 @@ public class AddressBookGUITest {
         // Test that a question message is shown
         window.optionPane().requireQuestionMessage();
 
-        //Test cancelling works
+        // Test cancelling works
         window.optionPane().buttonWithText("Yes").click();
     }
 
@@ -664,23 +745,30 @@ public class AddressBookGUITest {
         window.fileChooser().selectFile(testFile.getAbsoluteFile());
         window.fileChooser().approve();
 
-        //Type 'jan'
+        // Type 'jan'
         window.textBox().enterText("jan");
 
-        //Check only 'Jane' shows
+        // Check only 'Jane' shows
         window.table().requireRowCount(1);
+        window.table().requireContents(
+                new String[][] { { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
 
-        //Type 'jo'
+        // Type 'jo'
         window.textBox().deleteText().enterText("jo");
 
-        //Check only 'John' entry shows
+        // Check only 'John' entry shows
         window.table().requireRowCount(1);
+        window.table().requireContents(
+                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
 
-        //Type '12'
+        // Type '12'
         window.textBox().deleteText().enterText("12");
 
-        //Check both entries show
+        // Check both entries show
         window.table().requireRowCount(2);
+        window.table().requireContents(
+                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" },
+                        { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
     @Test
@@ -694,17 +782,17 @@ public class AddressBookGUITest {
 
     @Test
     public void programLaunchesCorrectly() throws ClassNotFoundException {
-        //Get robot
+        // Get robot
         Robot robot = window.robot();
 
-        //Clear the started program
+        // Clear the started program
         window.cleanUp();
 
-        //Start the application
+        // Start the application
         AddressBookGUI.main(null);
 
-        //Find the generated window and ensure it is showing. If one is not found
-        //this test fails.
+        // Find the generated window and ensure it is showing. If one is not found
+        // this test fails.
         window = WindowFinder.findFrame(new GenericTypeMatcher<JFrame>(JFrame.class) {
             protected boolean isMatching(JFrame frame) {
                 return "Address Book".equals(frame.getTitle()) && frame.isShowing();
