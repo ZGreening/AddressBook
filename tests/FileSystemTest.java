@@ -1,10 +1,4 @@
 
-///////////////////////////////////////////////////////////////////////////////
-//                      ADDRESS BOOK: FILE SYSTEM TEST                       //
-//                            Author: ZGreening                              //
-//                       https://github.com/ZGreening                        //
-///////////////////////////////////////////////////////////////////////////////
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,6 +6,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,12 +50,12 @@ public class FileSystemTest {
 
     @Test
     public void readUnreadableFile() {
-        //Make the file unreadable file
-        file.setReadable(false);    //NOTE: file will remain readable to the JVM on Windows platforms
+        //Make an unreadable mock file
+        file = mock(File.class);
+        doReturn(false).when(file).canRead();
 
-        //Test that an exception is thrown. It will be FileNotFoundException if
-        //the file is unreadable. It will be SQLException otherwise (on Windows)
-        assertThrows(Exception.class, () -> fileSystem.readFile(addressBook,file));
+        //Test that an exception is thrown
+        assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook,file));
     }
 
     @Test
