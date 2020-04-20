@@ -15,7 +15,7 @@ public class FileSystem {
      * @throws FileNotFoundException Thrown if the file does not exist or is
      *                               unreadable
      */
-    public void readFile(AddressBook addressBook, File file) throws SQLException, FileNotFoundException {
+    public static void readFile(AddressBook addressBook, File file) throws SQLException, FileNotFoundException {
         // Throw exception if the file is not usable or doesn't exist
         if (!file.exists() || !file.canRead()) {
             throw new FileNotFoundException();
@@ -52,7 +52,7 @@ public class FileSystem {
      * @throws SQLException Thrown if database issue occurs (Should not be thrown in
      *                      this method)
      */
-    public void saveFile(AddressBook addressBook, File file) throws SQLException {
+    public static void saveFile(AddressBook addressBook, File file) throws SQLException {
         // Initialize database connection
         Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
         Statement statement = connection.createStatement();

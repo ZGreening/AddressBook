@@ -19,14 +19,10 @@ public class FileSystemTest {
     @Rule
     public static TemporaryFolder folder = new TemporaryFolder();
     private static AddressBook addressBook = null; //An generic address book
-    private static FileSystem fileSystem=null; //The file system for testing
     private static File file = null;           //A java file for testing
 
     @BeforeEach
     public void init() throws IOException {
-        //Create a new filesystem each time
-        fileSystem = new FileSystem();
-
         //Create a new address book each time
         addressBook = new AddressBook();
 
@@ -45,7 +41,7 @@ public class FileSystemTest {
         file.delete();
 
         //Try reading deleted file
-        assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook,file));
+        assertThrows(FileNotFoundException.class, () -> FileSystem.readFile(addressBook,file));
     }
 
     @Test
@@ -55,7 +51,7 @@ public class FileSystemTest {
         doReturn(false).when(file).canRead();
 
         //Test that an exception is thrown
-        assertThrows(FileNotFoundException.class, () -> fileSystem.readFile(addressBook,file));
+        assertThrows(FileNotFoundException.class, () -> FileSystem.readFile(addressBook,file));
     }
 
     @Test
@@ -68,13 +64,13 @@ public class FileSystemTest {
         }
 
         //Test that SQL exception is thrown when file is not proper format
-        assertThrows(SQLException.class, () -> fileSystem.readFile(addressBook,file));
+        assertThrows(SQLException.class, () -> FileSystem.readFile(addressBook,file));
     }
 
     @Test
     public void saveBlankAddressBook() {
         //Test that file was saved correctly
-        assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.saveFile(addressBook,file));
         assertTrue(file.exists()); //Check file exists on disk
     }
 
@@ -83,10 +79,10 @@ public class FileSystemTest {
         //This should not throw an error, if this errors, so will TEST saveBlankAddressBook()
         //JUNIT says to not write tests with dependencies and that tests should be able to execute
         //in any order. Thus, this test will only succeed if the blank file can be saved AND read
-        assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.saveFile(addressBook,file));
 
         //Check the persistent file can be read with no exception
-        assertDoesNotThrow(() -> fileSystem.readFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.readFile(addressBook,file));
 
         //Check no one is in blank address book
         assertTrue(addressBook.getPersons().length==0); 
@@ -99,7 +95,7 @@ public class FileSystemTest {
         addressBook.add(new Person("Jane","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
 
         //Test that file was saved correctly
-        assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.saveFile(addressBook,file));
         assertTrue(file.exists()); //Check file exists on disk
     }
 
@@ -108,13 +104,13 @@ public class FileSystemTest {
         //Add two people to address book and save
         addressBook.add(new Person("John","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
         addressBook.add(new Person("Jane","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
-        assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.saveFile(addressBook,file));
 
         //Get new address book
         addressBook = new AddressBook();
 
         //Check the persistent file can be read with no exception
-        assertDoesNotThrow(() -> fileSystem.readFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.readFile(addressBook,file));
         assertTrue(addressBook.getPersons().length==2); //Check both people exist
 
         //Check they are the same
@@ -127,7 +123,7 @@ public class FileSystemTest {
         //Add two people to address book and save
         addressBook.add(new Person("John","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
         addressBook.add(new Person("Jane","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
-        assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.saveFile(addressBook,file));
 
         //Get new address book
         addressBook=new AddressBook();
@@ -137,13 +133,13 @@ public class FileSystemTest {
         addressBook.add(new Person("Joe","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
 
         //Save over same file
-        assertDoesNotThrow(() -> fileSystem.saveFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.saveFile(addressBook,file));
 
         //Get new address book
         addressBook=new AddressBook();
 
         //Read file
-        assertDoesNotThrow(() -> fileSystem.readFile(addressBook,file));
+        assertDoesNotThrow(() -> FileSystem.readFile(addressBook,file));
 
         //Check only two people exist
         assertTrue(addressBook.getPersons().length==2); 
