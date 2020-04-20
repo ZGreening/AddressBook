@@ -1,42 +1,10 @@
 
-///////////////////////////////////////////////////////////////////////////////
-//                    ADDRESS BOOK: ADDRESS BOOK GUI TEST                    //
-//                            Author: ZGreening                              //
-//                       https://github.com/ZGreening                        //
-///////////////////////////////////////////////////////////////////////////////
-
-import static java.awt.event.KeyEvent.VK_0;
-import static java.awt.event.KeyEvent.VK_1;
-import static java.awt.event.KeyEvent.VK_2;
-import static java.awt.event.KeyEvent.VK_3;
-import static java.awt.event.KeyEvent.VK_4;
-import static java.awt.event.KeyEvent.VK_5;
-import static java.awt.event.KeyEvent.VK_6;
-import static java.awt.event.KeyEvent.VK_7;
-import static java.awt.event.KeyEvent.VK_8;
-import static java.awt.event.KeyEvent.VK_9;
-import static java.awt.event.KeyEvent.VK_A;
-import static java.awt.event.KeyEvent.VK_C;
-import static java.awt.event.KeyEvent.VK_D;
-import static java.awt.event.KeyEvent.VK_E;
-import static java.awt.event.KeyEvent.VK_F;
-import static java.awt.event.KeyEvent.VK_H;
-import static java.awt.event.KeyEvent.VK_I;
-import static java.awt.event.KeyEvent.VK_J;
-import static java.awt.event.KeyEvent.VK_L;
-import static java.awt.event.KeyEvent.VK_M;
-import static java.awt.event.KeyEvent.VK_N;
-import static java.awt.event.KeyEvent.VK_O;
-import static java.awt.event.KeyEvent.VK_R;
-import static java.awt.event.KeyEvent.VK_S;
-import static java.awt.event.KeyEvent.VK_SHIFT;
-import static java.awt.event.KeyEvent.VK_SPACE;
-import static java.awt.event.KeyEvent.VK_T;
-import static java.awt.event.KeyEvent.VK_Y;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
 
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -45,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JFrame;
+import javax.swing.JTable;
 
 import org.assertj.swing.core.GenericTypeMatcher;
 import org.assertj.swing.core.Robot;
@@ -74,12 +43,13 @@ public class AddressBookGUITest {
     public static TemporaryFolder folder = new TemporaryFolder();
     private static File testFile = null;
     private static FrameFixture window = null;
+    private static AddressBookGUI addressBookGUI = null;
 
     @BeforeAll
     public static void init() {
-        //Prevent program exiting
+        // Prevent program exiting
         NoExitSecurityManagerInstaller.installNoExitSecurityManager();
-        
+
         // Required for full AssertJ GUI testing
         FailOnThreadViolationRepaintManager.install();
     }
@@ -87,8 +57,8 @@ public class AddressBookGUITest {
     @BeforeEach
     public void initEach() throws IOException, ClassNotFoundException {
         // Initialize window
-        AddressBookGUI frame = GuiActionRunner.execute(() -> new AddressBookGUI());
-        window = new FrameFixture(frame);
+        addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI());
+        window = new FrameFixture(addressBookGUI);
         window.show();
 
         // Create SQL test file
@@ -115,12 +85,12 @@ public class AddressBookGUITest {
 
     @AfterAll
     public static void clean() {
-        //Re-enable program to close after testing completes
+        // Re-enable program to close after testing completes
         NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    //                                  TESTS                                //
+    // TESTS //
     ///////////////////////////////////////////////////////////////////////////
 
     @Test
@@ -131,25 +101,20 @@ public class AddressBookGUITest {
 
         // Type 'John','Doe','1234 SomeStreet','SomeCity','FL','12345', and '1234567890'
         // into the respective boxes
-        dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_J).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_H, VK_N);
-        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_E);
-        dialog.textBox("address").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_SPACE).pressKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_M, VK_E).pressKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
-        dialog.textBox("city").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_M, VK_E).pressKey(VK_SHIFT).pressAndReleaseKeys(VK_C).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_I, VK_T, VK_Y);
-        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
-        dialog.textBox("zip").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5);
-        dialog.textBox("phone").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5, VK_6, VK_7, VK_8, VK_9, VK_0);
+        dialog.textBox("firstName").enterText("John");
+        dialog.textBox("lastName").enterText("Doe");
+        dialog.textBox("address").enterText("1234 SomeStreet");
+        dialog.textBox("city").enterText("SomeCity");
+        dialog.textBox("state").enterText("FL");
+        dialog.textBox("zip").enterText("12345");
+        dialog.textBox("phone").enterText("1234567890");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Test person is added
         window.table().requireRowCount(1);
+
     }
 
     @Test
@@ -176,15 +141,15 @@ public class AddressBookGUITest {
         dialog.textBox("zip").requireText("12345");
         dialog.textBox("phone").requireText("1234567890");
 
-        // Change John's zip to '54321'
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's state to 'GA'
+        dialog.textBox("state").click().deleteText().enterText("GA");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Test that the table contains the updated data
         window.table().requireContents(
-                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "54321", "1234567890" },
+                new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "GA", "12345", "1234567890" },
                         { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
@@ -218,9 +183,8 @@ public class AddressBookGUITest {
         DialogFixture dialog = window.dialog();
 
         // Type 'John'
-        dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_J).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_H, VK_N);
-       
+        dialog.textBox("firstName").enterText("John");
+
         // Click 'Cancel'
         dialog.button(JButtonMatcher.withText("Cancel")).click();
 
@@ -243,10 +207,10 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = window.dialog();
         
-        // Change John's zip to '54321'
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's state to 'GA'
+        dialog.textBox("state").click().deleteText().enterText("GA");
 
-        // Click 'OK'
+        // Click 'Cancel'
         dialog.button(JButtonMatcher.withText("Cancel")).click();
 
         // Test that the table is the same as the test file (Unchanged)
@@ -262,11 +226,11 @@ public class AddressBookGUITest {
         window.menuItem("open").click();
         window.fileChooser().selectFile(testFile.getAbsoluteFile());
         window.fileChooser().approve();
-        
-        //Click edit button for no window
+
+        // Click edit button for no window
         window.button("edit").click();
 
-        //Test that the edit button on the main menu
+        // Test that the edit button on the main menu
         // is still focused indicating nothing was opened
         window.button("edit").requireFocused();
     }
@@ -371,42 +335,36 @@ public class AddressBookGUITest {
 
     @Test
     public void canSaveNewBookOverAnother() {
-        //Add a person to a new book
+        // Add a person to a new book
         window.button("add").click();
         DialogFixture dialog = window.dialog();
 
         // Type 'John','Doe','1234 SomeStreet','SomeCity','FL','12345', and '1234567890'
         // into the respective boxes
-        dialog.textBox("firstName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_J).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_H, VK_N);
-        dialog.textBox("lastName").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_D).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_E);
-        dialog.textBox("address").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_SPACE).pressKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_O, VK_M, VK_E).pressKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT).pressAndReleaseKeys(VK_T, VK_R, VK_E, VK_E, VK_T);
-        dialog.textBox("city").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_S).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_O, VK_M, VK_E).pressKey(VK_SHIFT).pressAndReleaseKeys(VK_C).releaseKey(VK_SHIFT)
-                .pressAndReleaseKeys(VK_I, VK_T, VK_Y);
-        dialog.textBox("state").pressKey(VK_SHIFT).pressAndReleaseKeys(VK_F, VK_L).releaseKey(VK_SHIFT);
-        dialog.textBox("zip").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5);
-        dialog.textBox("phone").pressAndReleaseKeys(VK_1, VK_2, VK_3, VK_4, VK_5, VK_6, VK_7, VK_8, VK_9, VK_0);
+        dialog.textBox("firstName").enterText("John");
+        dialog.textBox("lastName").enterText("Doe");
+        dialog.textBox("address").enterText("1234 SomeStreet");
+        dialog.textBox("city").enterText("SomeCity");
+        dialog.textBox("state").enterText("FL");
+        dialog.textBox("zip").enterText("12345");
+        dialog.textBox("phone").enterText("1234567890");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
 
-        //Make sure save and saveAs are enabled
+        // Make sure save and saveAs are enabled
         window.menuItem("save").requireEnabled();
         window.menuItem("saveAs").requireEnabled();
 
-        //Click 'save'
+        // Click 'save'
         window.menuItem("file").click();
         window.menuItem("save").click();
 
-        //Save over test file
+        // Save over test file
         window.fileChooser().selectFile(testFile);
         window.fileChooser().approve();
 
-        //Check that question message is shown for overwriting a book
+        // Check that question message is shown for overwriting a book
         window.optionPane().requireQuestionMessage();
     }
 
@@ -426,7 +384,7 @@ public class AddressBookGUITest {
         DialogFixture dialog = window.dialog();
 
         // Edit the person
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        dialog.textBox("state").click().deleteText().enterText("GA");
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Check save button is active
@@ -436,8 +394,7 @@ public class AddressBookGUITest {
         // Click 'save' and save to file
         window.menuItem("file").click();
         window.menuItem("saveAs").click();
-        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox().pressAndReleaseKeys(VK_T, VK_E,
-                VK_S, VK_T, VK_SPACE, VK_F, VK_I, VK_L, VK_E);
+        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox().enterText("test file");
         window.fileChooser().approve();
 
         // Test file exists
@@ -461,14 +418,13 @@ public class AddressBookGUITest {
         DialogFixture dialog = window.dialog();
 
         // Edit the person
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        dialog.textBox("state").click().deleteText().enterText("GA");
         dialog.button(JButtonMatcher.withText("OK")).click();
 
         // Click 'save' and cancel
         window.menuItem("file").click();
         window.menuItem("saveAs").click();
-        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox().pressAndReleaseKeys(VK_T, VK_E,
-                VK_S, VK_T, VK_SPACE, VK_F, VK_I, VK_L, VK_E);
+        window.fileChooser().setCurrentDirectory(folder.getRoot()).fileNameTextBox().enterText("test file");
         window.fileChooser().cancel();
 
         // Test file does not exists
@@ -493,6 +449,89 @@ public class AddressBookGUITest {
     }
 
     @Test
+    public void errorShowsOnPrintFail() throws PrinterException {
+        //Clear the started program
+        window.cleanUp();
+
+        //Remove edtViolationException trigger for creating mocks
+        FailOnThreadViolationRepaintManager.uninstall();
+
+        //Set table to throw exception
+        JTable tableMock=mock(JTable.class);
+        doThrow(new PrinterException("A print error has occurred")).when(tableMock).print();
+        addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI(tableMock));
+
+        //Start the application with the injected mocks
+        window = new FrameFixture(addressBookGUI);
+        window.show();
+
+        // Load sample address Book
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Click print
+        window.menuItem("file").click();
+        window.menuItem("print").click();
+
+        // Make sure that the warning dialog is visible
+        window.optionPane().requireWarningMessage();
+    }
+
+    //NOTE: this test will appear to display incorrectly while running.
+    //This is due to the way the GUI has been replaced. The test still
+    //functions correctly
+    @Test
+    public void errorShowsOnSaveFail() throws SQLException {
+        //Clear the started program
+        window.cleanUp();
+
+        //Remove edtViolationException trigger for creating spies
+        FailOnThreadViolationRepaintManager.uninstall();
+
+        //Set table to throw exception
+        AddressBook addressBookSpy=spy(new AddressBook());
+        AddressBookController controllerSpy=spy(new AddressBookController(addressBookSpy));
+        doThrow(new SQLException("An error occurred during save")).when(controllerSpy).save(isA(File.class));
+        addressBookGUI = GuiActionRunner.execute(() -> new AddressBookGUI(addressBookSpy,controllerSpy));
+        
+        //Start the application with the injected spies
+        window = new FrameFixture(addressBookGUI);
+        window.show();
+
+        // Load sample address Book (so current file is not null)
+        window.menuItem("file").click();
+        window.menuItem("open").click();
+        window.fileChooser().selectFile(testFile.getAbsoluteFile());
+        window.fileChooser().approve();
+
+        // Click and get dialog window
+        window.button("add").click();
+        DialogFixture dialog = window.dialog();
+
+        // Type 'John','Doe','1234 SomeStreet','SomeCity','FL','12345', and '1234567890'
+        // into the respective boxes
+        dialog.textBox("firstName").enterText("John");
+        dialog.textBox("lastName").enterText("Doe");
+        dialog.textBox("address").enterText("1234 SomeStreet");
+        dialog.textBox("city").enterText("SomeCity");
+        dialog.textBox("state").enterText("FL");
+        dialog.textBox("zip").enterText("12345");
+        dialog.textBox("phone").enterText("1234567890");
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Click print
+        window.menuItem("file").click();
+        window.menuItem("save").click();
+
+        // Make sure that the error dialog is visible
+        window.optionPane().requireErrorMessage();
+    }
+
+    @Test
     public void confirmDialogShowsOnNew() {
         // Load sample address Book
         window.menuItem("file").click();
@@ -507,8 +546,8 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = window.dialog();
 
-        // Change John's zip to '54321'
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's state to 'GA'
+        dialog.textBox("state").click().deleteText().enterText("GA");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
@@ -536,8 +575,8 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = window.dialog();
 
-        // Change John's zip to '54321'
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's state to 'GA'
+        dialog.textBox("state").click().deleteText().enterText("GA");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
@@ -551,7 +590,10 @@ public class AddressBookGUITest {
     }
 
     @Test
-    public void confirmDialogShowsOnQuitConfirm() {
+    public void confirmDialogShowsOnQuitCancel() {
+        //Remove no exit so that window dispatch event line can run (Needed for 100% statement coverage)
+        NoExitSecurityManagerInstaller.installNoExitSecurityManager().uninstall();
+
         // Load sample address Book
         window.menuItem("file").click();
         window.menuItem("open").click();
@@ -565,8 +607,8 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = window.dialog();
 
-        // Change John's zip to '54321'
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's state to 'GA'
+        dialog.textBox("state").click().deleteText().enterText("GA");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
@@ -579,11 +621,12 @@ public class AddressBookGUITest {
         window.optionPane().requireQuestionMessage();
 
         //Test closing works
-        window.optionPane().buttonWithText("Yes").click();
+        window.optionPane().buttonWithText("No").click();
     }
 
     @Test
-    public void confirmDialogShowsOnWindowCloseCancel() {
+    public void confirmDialogShowsOnWindowCloseConfirm() {
+
         // Load sample address Book
         window.menuItem("file").click();
         window.menuItem("open").click();
@@ -597,8 +640,8 @@ public class AddressBookGUITest {
         // Get the person dialog
         DialogFixture dialog = window.dialog();
 
-        // Change John's zip to '54321'
-        dialog.textBox("zip").click().deleteText().pressAndReleaseKeys(VK_5, VK_4, VK_3, VK_2, VK_1);
+        // Change John's state to 'GA'
+        dialog.textBox("state").click().deleteText().enterText("GA");
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
@@ -610,7 +653,7 @@ public class AddressBookGUITest {
         window.optionPane().requireQuestionMessage();
 
         //Test cancelling works
-        window.optionPane().buttonWithText("No").click();
+        window.optionPane().buttonWithText("Yes").click();
     }
 
     @Test
@@ -622,19 +665,19 @@ public class AddressBookGUITest {
         window.fileChooser().approve();
 
         //Type 'jan'
-        window.textBox().pressAndReleaseKeys(VK_J,VK_A,VK_N);
+        window.textBox().enterText("jan");
 
         //Check only 'Jane' shows
         window.table().requireRowCount(1);
 
         //Type 'jo'
-        window.textBox().deleteText().pressAndReleaseKeys(VK_J,VK_O);
+        window.textBox().deleteText().enterText("jo");
 
         //Check only 'John' entry shows
         window.table().requireRowCount(1);
 
         //Type '12'
-        window.textBox().deleteText().pressAndReleaseKeys(VK_1,VK_2);
+        window.textBox().deleteText().enterText("12");
 
         //Check both entries show
         window.table().requireRowCount(2);
