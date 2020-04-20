@@ -112,9 +112,7 @@ public class PersonDialog extends JDialog {
         phone.setText(person.getPhone());
     }
 
-    public Result showDialog() {
-        // Default to CANCEL if the user closes the dialog window
-        setVisible(true);
+    public Result getResult() {
         return result;
     }
 

@@ -178,7 +178,8 @@ public class AddressBookGUI extends JFrame {
         addButton.setMnemonic('A');
         addButton.addActionListener(e -> {
             PersonDialog dialog = new PersonDialog(this);
-            if (dialog.showDialog() != PersonDialog.Result.OK || dialog.getPerson() == null) {
+            dialog.setVisible(true);
+            if (dialog.getResult() != PersonDialog.Result.OK || dialog.getPerson() == null) {
                 return;
             }
             controller.add(dialog.getPerson());
@@ -194,7 +195,8 @@ public class AddressBookGUI extends JFrame {
             int index = nameList.convertRowIndexToModel(selectedRow);
             Person oldPerson = controller.get(index);
             PersonDialog dialog = new PersonDialog(this, oldPerson);
-            if (dialog.showDialog() != PersonDialog.Result.OK) {
+            dialog.setVisible(true);
+            if (dialog.getResult() != PersonDialog.Result.OK) {
                 return;
             }
             controller.set(index, dialog.getPerson());
