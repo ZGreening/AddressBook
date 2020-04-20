@@ -19,9 +19,9 @@ public class AddressBookGUI extends JFrame {
         });
     }
 
-    private final AddressBook addressBook = new AddressBook();;
-    private final AddressBookController controller = new AddressBookController(addressBook);
-    private final JTable nameList = new JTable(addressBook);
+    private AddressBook addressBook = new AddressBook();;
+    private AddressBookController controller = new AddressBookController(addressBook);
+    private JTable nameList = new JTable(addressBook);
     private final TableRowSorter<AddressBook> tableRowSorter = new TableRowSorter<>(addressBook);;
     private final JButton addButton = new JButton("Add...");
     private final JButton editButton = new JButton("Edit...");
@@ -36,8 +36,21 @@ public class AddressBookGUI extends JFrame {
 
     private File currentFile = null;
 
+    // Used for tests NOTE: using package protection not public
+    AddressBookGUI(AddressBook addressBook, AddressBookController controller) {
+        this();
+        this.addressBook = addressBook;
+        this.controller = controller;
+    }
+
+    // Used for tests NOTE: using package protection not public
+    AddressBookGUI(JTable table) {
+        this();
+        nameList = table;
+    }
+
     public AddressBookGUI() {
-        //Give names for GUI components
+        // Give names for GUI components
         nameList.setName("table");
         addButton.setName("add");
         editButton.setName("edit");
@@ -115,10 +128,12 @@ public class AddressBookGUI extends JFrame {
             if (JFileChooser.APPROVE_OPTION != jfc.showSaveDialog(this)) {
                 return;
             }
+            File tempFile = currentFile;
             currentFile = jfc.getSelectedFile();
             if (currentFile.exists() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to overwrite this file?", "Are you sure?", JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE)) {
+                currentFile = tempFile; // Restore old state of current file to prevent accidental overwrites later on
                 return;
             }
             saveItem.doClick();
@@ -135,7 +150,7 @@ public class AddressBookGUI extends JFrame {
         });
         file.add(printItem);
         file.add(new JSeparator());
-        quitItem.addActionListener(al -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
+        quitItem.addActionListener(e -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         file.add(quitItem);
         menuBar.add(file);
         menuBar.add(new JSeparator());
@@ -146,20 +161,16 @@ public class AddressBookGUI extends JFrame {
             // (EventListener on JTextField requires "Enter" before firing)
             @Override
             public void insertUpdate(DocumentEvent e) {
-                filter();
+                changedUpdate(e);
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                filter();
+                changedUpdate(e);
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                filter();
-            }
-
-            public void filter() {
                 tableRowSorter.setRowFilter(RowFilter.regexFilter("(?iu)" + Pattern.quote(searchTextField.getText())));
             }
         });
@@ -169,7 +180,8 @@ public class AddressBookGUI extends JFrame {
         addButton.setMnemonic('A');
         addButton.addActionListener(e -> {
             PersonDialog dialog = new PersonDialog(this);
-            if (dialog.showDialog() != PersonDialog.Result.OK || dialog.getPerson() == null) {
+            dialog.setVisible(true);
+            if (dialog.getResult() != PersonDialog.Result.OK || dialog.getPerson() == null) {
                 return;
             }
             controller.add(dialog.getPerson());
@@ -182,11 +194,11 @@ public class AddressBookGUI extends JFrame {
             if (selectedRow == -1) {
                 return;
             }
-            // TODO: This doesn't work yet
             int index = nameList.convertRowIndexToModel(selectedRow);
             Person oldPerson = controller.get(index);
             PersonDialog dialog = new PersonDialog(this, oldPerson);
-            if (dialog.showDialog() != PersonDialog.Result.OK) {
+            dialog.setVisible(true);
+            if (dialog.getResult() != PersonDialog.Result.OK) {
                 return;
             }
             controller.set(index, dialog.getPerson());

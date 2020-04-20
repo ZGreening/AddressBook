@@ -2,14 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class PersonDialog extends JDialog {
-    private static final long serialVersionUID = 1L;
-    
+public class PersonDialog extends JDialog {    
     public enum Result {
         OK, CANCEL,
     }
 
-    private Result result;
+    private static final long serialVersionUID = 1L;
+    private Result result = Result.CANCEL;
     private JTextField firstName;
     private JTextField lastName;
     private JTextField address;
@@ -113,10 +112,7 @@ public class PersonDialog extends JDialog {
         phone.setText(person.getPhone());
     }
 
-    public Result showDialog() {
-        // Default to CANCEL if the user closes the dialog window
-        result = Result.CANCEL;
-        setVisible(true);
+    public Result getResult() {
         return result;
     }
 
