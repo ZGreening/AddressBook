@@ -29,7 +29,7 @@ class AddressBookControllerTest {
 
         // model = new DefaultTableModel();
         personListTest = new ArrayList<>();
-        test_Person = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Chincinnati", "OH", "43123", "0123456789");
+        test_Person = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Cincinnati", "OH", "43123", "0123456789");
         test_AddressBook = new AddressBook();
         controllerTest = new AddressBookController(test_AddressBook);
     }
@@ -86,12 +86,12 @@ class AddressBookControllerTest {
     void removePersonFromListAndListWillNotBeEmpty() {
         // doNothing().when(addressBookMock).remove(0);
         controllerTest.add(test_Person);
-        int originalsize = controllerTest.addressBook.getPersons().length;
+        int originalSize = controllerTest.addressBook.getPersons().length;
 
         controllerTest.remove(0);
-        int newsize = controllerTest.addressBook.getPersons().length;
+        int newSize = controllerTest.addressBook.getPersons().length;
 
-        assertEquals(newsize + 1, originalsize);
+        assertEquals(newSize + 1, originalSize);
     }
 
     /**
@@ -107,7 +107,7 @@ class AddressBookControllerTest {
      * This test case will test if Address Book Person clears correctly.
      */
     @Test
-    void getPersonOnNONEmpyList() {
+    void getPersonOnNONEmptyList() {
         controllerTest.add(test_Person);
 
         // System.out.println(controllerTest.get(0).toString());
@@ -115,7 +115,7 @@ class AddressBookControllerTest {
     }
 
     @Test
-    void getOnEmpyListShouldThrowError() {
+    void getOnEmptyListShouldThrowError() {
         assertThrows(IndexOutOfBoundsException.class, () -> controllerTest.get(0));
     }
 
