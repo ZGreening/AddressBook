@@ -101,6 +101,9 @@ public class PersonDialog extends JDialog {
         JButton okButton = new JButton("OK");
         okButton.setMnemonic('O');
         okButton.addActionListener(e -> {
+            if(getPerson()==null) {
+                return;
+            }
             result = Result.OK;
             setVisible(false);
         });
