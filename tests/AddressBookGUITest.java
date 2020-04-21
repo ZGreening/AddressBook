@@ -48,7 +48,7 @@ import org.junit.rules.TemporaryFolder;
 public class AddressBookGUITest {
 
 
-    //TemporaryFolder clears itself from memory whne program ends
+    //TemporaryFolder clears itself from memory when program ends
     @Rule
     public static TemporaryFolder folder = new TemporaryFolder();
     private static File testFile = null;
@@ -56,7 +56,7 @@ public class AddressBookGUITest {
     private static AddressBookGUI addressBookGUI = null;
 
     /**
-     * This class runs before each test, to initialize variables.
+     * This method runs before each test, to initialize variables.
      *
      * @throws IOException if failure in reading or writing file
      * @throws ClassNotFoundException if Class isnt present

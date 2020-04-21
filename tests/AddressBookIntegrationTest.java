@@ -24,7 +24,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 class AddressBookIntegrationTest {
 
-  //DefaultTableModel model;
   Person test_Person; //Test Person
   AddressBook test_AddressBook; //Test AddressBook
   Person person_mock; //Person Mock
@@ -36,18 +35,8 @@ class AddressBookIntegrationTest {
    * This method runs first before each test.
    */
   void setUp() {
-
-    //model = new DefaultTableModel();
     test_Person = new Person("Jane","Dorian",
         "987 Westbrook Blvd","Chincinnati","OH","43123","0123456789");
-
-//    model.addColumn("Col1");
-//    model.addColumn("Col2");
-//    model.addColumn("Col3");
-//    model.addColumn("Col4");
-//    model.addColumn("Col5");
-//    model.addColumn("Col6");
-//    model.addColumn("Col7");
     test_AddressBook = new AddressBook();
     person_spy = spy(test_Person);
     person_mock = mock(Person.class);
@@ -59,7 +48,6 @@ class AddressBookIntegrationTest {
    */
   @AfterEach
   void tearDown() {
-    //model = null;
     test_Person=null;
     test_AddressBook=null;
     person_mock=null;

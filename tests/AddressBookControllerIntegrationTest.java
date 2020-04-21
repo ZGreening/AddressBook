@@ -35,14 +35,13 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 class AddressBookControllerIntegrationTest {
-
-
   Person person_mock; //Mock person class
-  //AddressBook test_AddressBook;
   AddressBook addressBook_mock;// stub AddressBook class
   AddressBook addressBook_spy;
   AddressBookController controllerTest;
 
+  @Rule
+  TemporaryFolder folder = new TemporaryFolder();
 
   @BeforeEach
   /**
@@ -50,7 +49,6 @@ class AddressBookControllerIntegrationTest {
    * Is intended to set up variables for test to use.
    */
   void setUp() {
-
     //Mock Functionality of AddressBook
     addressBook_mock = mock(AddressBook.class);
     //Spy of AddressBook
@@ -59,7 +57,6 @@ class AddressBookControllerIntegrationTest {
     controllerTest = new AddressBookController(addressBook_mock);
    //Mock of Person class
     person_mock = mock(Person.class);
-
   }
 
   @AfterEach
@@ -68,7 +65,6 @@ class AddressBookControllerIntegrationTest {
    * Clears data for the next test ot use
    */
   void tearDown() {
-
     controllerTest = null;
     person_mock=null;
     addressBook_mock = null;
@@ -197,10 +193,11 @@ class AddressBookControllerIntegrationTest {
     assertEquals("Bread, Ginger",controllerTest.get(0).toString());
   }
 
-  @Test
+
   /**
    * This method uses a addressbook mock to check if clear method is called.
    */
+  @Test
   public void clearAddressMock(){
     doNothing().when(addressBook_mock).clear();
     controllerTest.clear();
@@ -240,13 +237,12 @@ class AddressBookControllerIntegrationTest {
       e.printStackTrace();
     }
   }
-  @Rule
-  TemporaryFolder folder = new TemporaryFolder();
-  @Test
+
   /**
    * This test checks if saving fileSystem with a valid file does not
    * throw an error.
    */
+  @Test
   public void testSavingFileSuccessfulSpy() throws IOException {
     controllerTest= new AddressBookController(addressBook_spy);
     folder.create(); //Create test folder
@@ -259,12 +255,12 @@ class AddressBookControllerIntegrationTest {
     }
   }
 
-  @Test
+
   /**
    * This test checks if a valid file can be opened by filesystem.
    * Intensive file checking is done in FileSystem Test
    */
-  public void testOpeningFileMck() throws IOException {
+  @Test  public void testOpeningFileMck() throws IOException {
     controllerTest= new AddressBookController(addressBook_spy);
     folder.create(); //Create test folder
     final File file = folder.newFile("MyTestFile");//Create test file
