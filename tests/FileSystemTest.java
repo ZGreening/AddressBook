@@ -12,6 +12,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.rules.TemporaryFolder;
 
 public class FileSystemTest {
@@ -115,7 +116,7 @@ public class FileSystemTest {
     /**
      * This test case will test the program saving a valid address book.
      */
-    @Test
+    @Test @Timeout(value=120000) //120 seconds, two minutes max time to access database
     public void saveNormalAddressBook() {
         //Add two people to address book
         addressBook.add(new Person("John","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
@@ -129,7 +130,7 @@ public class FileSystemTest {
     /**
      * This test case will test the program will open a valid file
      */
-    @Test
+    @Test @Timeout(value=120000) //120 seconds, two minutes max time to access database
     public void readNormalAddressBook() {
         //Add two people to address book and save
         addressBook.add(new Person("John","Doe","1234 NON EXIST ROAD","SomeCity","FL","12345","1234567890"));
