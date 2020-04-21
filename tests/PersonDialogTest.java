@@ -17,6 +17,11 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 
+/**
+ * PersonDialogTest.java
+ * This test class tests PersonDialog Class
+ * This class uses AssertJ to run automated testing.
+ */
 class PersonDialogTest {
 
     @Rule
@@ -24,6 +29,9 @@ class PersonDialogTest {
     private static PersonDialog personDialog = null;
     public static TemporaryFolder folder = new TemporaryFolder();
 
+    /**
+     * This method is the absolute first to run.
+     */
     @BeforeAll
     public static void init() {
         // Prevent program exiting
@@ -33,6 +41,11 @@ class PersonDialogTest {
         FailOnThreadViolationRepaintManager.install();
     }
 
+    /**
+     * This method runs after init() and before each test method.
+     * @throws IOException when a file cannot be read or saved.
+     * @throws ClassNotFoundException when Class cannot be found.
+     */
     @BeforeEach
     void setUp() throws IOException, ClassNotFoundException {
         // Initialize window
@@ -41,12 +54,18 @@ class PersonDialogTest {
         window.show();
     }
 
+    /**
+     * This test is run after each test
+     */
     @AfterEach
     void tearDown() {
         // Close assertJ window gui
         window.cleanUp();
     }
 
+    /**
+     * This test case is run after all tests are done
+     */
     @AfterAll
     public static void clean() {
         // Re-enable program to close after testing completes
@@ -57,6 +76,9 @@ class PersonDialogTest {
     //                              UNIT TESTS                               //
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * Test that the program will add a valid person.
+     */
     @Test
     void getValidPerson() {
         // Type 'John','Doe','1234 SomeStreet','SomeCity','FL','12345', and '1234567890'
@@ -88,6 +110,9 @@ class PersonDialogTest {
         assertEquals(personDialog.getResult(), PersonDialog.Result.OK);
     }
 
+    /**
+     * Test that a invalid person is not added to addressBook.
+     */
     @Test
     void addPersonInvalid() {
         // Create person with numbers in place of person's name
@@ -104,6 +129,9 @@ class PersonDialogTest {
         assertEquals(personDialog.getResult(), PersonDialog.Result.OK);
     }
 
+    /**
+     * Tests the PersonDialog will exit will cancel button is pressed.
+     */
     @Test
     void addPersonCancel() {
         // Fill first name then cancel
@@ -116,6 +144,10 @@ class PersonDialogTest {
         assertEquals(personDialog.getResult(), PersonDialog.Result.CANCEL);
     }
 
+    /**
+     * Tests that person dialog text fields will bbe
+     * filled with data of a person selected.
+     */
     @Test
     void openWithPerson() {
         // Close empty window

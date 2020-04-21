@@ -1,64 +1,79 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.table.DefaultTableModel;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-
-
+/**
+ * AddressBookTest.java
+ * This is the testclass for AddressBook's unit tests
+ */
 class AddressBookTest {
 
-  DefaultTableModel model;
-  List<Person> personListTest;
   Person test_Person;
   AddressBook test_AddressBook;
 
-
+  /**
+   * This method runs before each test to initialize variables.
+   */
   @BeforeEach
   void setUp() {
-
-    model = new DefaultTableModel();
-    personListTest = new ArrayList<>();
     test_Person = new Person("Jane","Dorian",
         "987 Westbrook Blvd","Chincinnati","OH","43123","0123456789");
-
-    model.addColumn("Col1");
-    model.addColumn("Col2");
-    model.addColumn("Col3");
-    model.addColumn("Col4");
-    model.addColumn("Col5");
-    model.addColumn("Col6");
-    model.addColumn("Col7");
     test_AddressBook = new AddressBook();
   }
 
+  /**
+   * This method runs before each test to clear variables.
+   */
   @AfterEach
   void tearDown() {
-    model = null;
-    personListTest = null;
     test_Person=null;
+    test_AddressBook=null;
   }
 
   /**
    * This test case will test that a new person will replace a person
-   * already in the Address Bok.
+   * already in the Address Book.
    */
   @Test
   public void setNewPersonToAddressBook(){
     //Given index, change personList with new Person
-    Person test_Person2 = new Person("Juanito","Hernandez",
+    Person test_Person2 = new Person("Sweet","Tea",
         "19964 Miami Beach","Miami,Ohio","OH","85012","2321232010");
     test_AddressBook.add(test_Person);
     test_AddressBook.set(0,test_Person2);
     //Person[] personArray= test_AddressBook.getPersons();
-    assertEquals(test_AddressBook.getPersons()[0].getFirstName(), test_Person2.getFirstName());
+    assertEquals("Tea, Sweet",test_AddressBook.get(0).toString());
+
+  }
+  /**
+   * This test case will throw an error if set method is
+   * called on a empty AddressBook
+   */
+  @Test
+  public void setNewPersonToEmptyListThrowsError(){
+    //Given index, change personList with new Person
+    Person test_Person2 = new Person("Sweet","Tea",
+        "19964 Miami Beach","Miami,Ohio","OH","85012","2321232010");
+    assertEquals(0,test_AddressBook.getPersons().length);
+    assertThrows(IndexOutOfBoundsException.class,()->test_AddressBook.set(0,test_Person2));
+  }
+
+  /**
+   * This test case will test that calling set with a null person
+   * will not enter the AddressBook or change the table
+   */
+  @Test
+  public void setNullPersonNothingHappens(){
+    test_AddressBook.add(test_Person);
+    test_AddressBook.set(0,null);
+    assertNotNull(test_AddressBook.get(0));
+    assertEquals("Dorian, Jane",test_AddressBook.get(0).toString());
 
   }
 
@@ -68,49 +83,64 @@ class AddressBookTest {
   @Test
   public void addPersonToAddressBook(){
     test_AddressBook.add(test_Person);
-    assertTrue(test_AddressBook.getPersons()[0].getFirstName() =="Jane");
+    assertEquals("Dorian, Jane",test_AddressBook.get(0).toString());
   }
 
   /**
-   * This test case will test if getPerson() return the Address Book's person List
-   * as an Array.
+   * This test will check getPersons will return the Array of the
+   * current persons List
    */
   @Test
-  void getPersons() {
+  void getPersonsTest() {
     //Attempt to convert ArrayList to an array
 
     test_AddressBook.add(test_Person);
 
-    //Create ArrayList for TestCase
-    List<Person> personList = new ArrayList<>();
-    personList.add(test_Person);
-
-    //Create Array for TestCase
-    Person[] test_PersonArray = new Person[personList.size()];
-    personList.toArray(test_PersonArray);
-
-    assertEquals(test_AddressBook.getPersons().length,test_PersonArray.length);
+    assertEquals(1,test_AddressBook.getPersons().length);
+    assertEquals("Dorian, Jane",test_AddressBook.getPersons()[0].toString());
   }
 
   /**
    * This test case tests if a person is successfully removed from Person List.
    */
   @Test
-  void removePerson() {
+  void removePersonFromAddressBook() {
     //Given an index delete person from arrayList
     test_AddressBook.add(test_Person);
-    Person test_Person2 = new Person("Juanito","Hernandez",
+    Person test_Person2 = new Person("Steely","Phil",
         "19964 Miami Beach","Miami,Ohio","OH","85012","2321232100");
     test_AddressBook.add(test_Person2);
     test_AddressBook.remove(0);
-    assertTrue(test_AddressBook.getPersons()[0].getFirstName() == "Juanito");//Confirm delete
+    boolean isInArray = false;
+    String search = "Dorian, Jane";
+    for(int i = 0; i < test_AddressBook.getPersons().length; i++)
+    {
+      if(test_AddressBook.getPersons()[i].toString().equals(search))
+      {
+        //Found Person!
+        isInArray = true;
+        break;
+      }
+    }
+    //Assert Person not found
+    assertFalse(isInArray);
+    assertEquals("Phil, Steely", test_AddressBook.get(0).toString());
   }
 
   /**
-   * This method checks if the correct person is returned by get() method.
+   * This is a negative test case to test if Out of Bounds exception
+   * is thrown if removing on empty list
    */
   @Test
-  void getPersonFromAddressBookPerosnList() {
+  void removePersonFromEmptyAddressBookThrowsError(){
+    assertThrows(IndexOutOfBoundsException.class, ()-> test_AddressBook.remove(0));
+  }
+
+  /**
+   * This method checks if the correct person is returned by get method.
+   */
+  @Test
+  void getPersonFromAddressBookPersonList() {
     test_AddressBook.add(test_Person);
     assertEquals(test_Person.getFirstName(),test_AddressBook.get(0).getFirstName());
   }
@@ -122,6 +152,15 @@ class AddressBookTest {
   void clearWithEmptyList() {
     test_AddressBook.clear();
     assertTrue(test_AddressBook.getPersons().length ==0);
+  }
+  @Test
+  void clearOnNullList(){
+    test_AddressBook.add(test_Person);
+    test_AddressBook.remove(0);
+    test_AddressBook.clear();
+    //test_AddressBook.add(test_Person);
+    //test_AddressBook.getPersons()=null;
+    //test_AddressBook.clear();
   }
 
   /**
@@ -140,10 +179,10 @@ class AddressBookTest {
    */
   @Test
   void getRowCount() {
-    //RowCount is Size of persoonList
+    //RowCount is Size of personList
     test_AddressBook.add(test_Person);
     test_AddressBook.add(test_Person);
-    assertEquals(test_AddressBook.getRowCount(),2);
+    assertEquals(2,test_AddressBook.getRowCount());
   }
 
   /**
@@ -153,7 +192,7 @@ class AddressBookTest {
    */
   @Test
   void getColumnCount() {
-    assertEquals(test_AddressBook.getColumnCount(),7);
+    assertEquals(7,test_AddressBook.getColumnCount());
   }
 
   /**
@@ -164,16 +203,23 @@ class AddressBookTest {
   @Test
   void getValueAt() {
     test_AddressBook.add(test_Person);
+    Person test_Person2 = new Person("Steely","Phil",
+        "19964 Miami Beach","Miami,Ohio","OH","85012","2321232100");
+
+    test_AddressBook.add(test_Person2);
     assertEquals("Chincinnati",  test_AddressBook.getValueAt(0,3));
+    //Get value from Second person
+    assertEquals("2321232100",  test_AddressBook.getValueAt(1,6));
   }
 
   /**
    * This test case will test if the column name is correct.
+   * column name is the Person class's field member variable
    */
   @Test
   void getColumnName() {
     test_AddressBook.add(test_Person);
-    System.out.println(test_AddressBook.getColumnName(1));
-    assertEquals(test_AddressBook.get(0).getFirstName(),test_Person.getFirstName());
+    assertEquals("Last Name",test_AddressBook.getColumnName(0));
+    assertEquals("Phone",test_AddressBook.getColumnName(6));
   }
 }

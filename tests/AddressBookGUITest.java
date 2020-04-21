@@ -32,6 +32,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.rules.TemporaryFolder;
 
+/**
+ * AddressBookGUITest.java
+ * This is the testcase for testing the GUI itself.
+ * It uses AssertJ to perform automated tests
+ *
+ *
+ */
+
 //NOTE: Due to a bug(s) in AssertJ/JDK, this entire class's
 //tests fail on MacOS systems. This is partly because of the way
 //the system simulates clicks on the GUI. It requires special
@@ -39,12 +47,20 @@ import org.junit.rules.TemporaryFolder;
 //SEE: https://github.com/joel-costigliola/assertj-swing/issues/25
 public class AddressBookGUITest {
 
+
+    //TemporaryFolder clears itself from memory when program ends
     @Rule
     public static TemporaryFolder folder = new TemporaryFolder();
     private static File testFile = null;
     private static FrameFixture window = null;
     private static AddressBookGUI addressBookGUI = null;
 
+    /**
+     * This method runs before each test, to initialize variables.
+     *
+     * @throws IOException if failure in reading or writing file
+     * @throws ClassNotFoundException if Class isnt present
+     */
     @BeforeEach
     public void initEach() throws IOException, ClassNotFoundException {
         // Prevent program exiting
@@ -74,12 +90,18 @@ public class AddressBookGUITest {
         }
     }
 
+    /**
+     * This method runs after each test, to clear out leftover variables
+     */
     @AfterEach
     public void cleanEach() {
         // Close assertJ window gui
         window.cleanUp();
     }
 
+    /**
+     * This is the last method that runs.
+     */
     @AfterAll
     public static void clean() {
         // Re-enable program to close after testing completes
@@ -90,6 +112,10 @@ public class AddressBookGUITest {
     //                                TESTS                                  //
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * This is automated test that will open the window
+     * and create a valid new person.
+     */
     @Test
     public void canCreateNewPerson() {
         // Click and get dialog window
@@ -117,6 +143,10 @@ public class AddressBookGUITest {
                 new String[][] { { "Doe", "John", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
+    /**
+     * This is a negative test to check behavior of when
+     * the GUI tries to add an invalid person
+     */
     @Test
     public void cantCreateBadNewPerson() {
         // Click and get dialog window
@@ -134,6 +164,31 @@ public class AddressBookGUITest {
         window.table().requireRowCount(0);
     }
 
+    /**
+     * This is a negative test to check behavior of when
+     * the GUI tries to add an invalid person.
+     * Invalid last name as well.
+     */
+    @Test
+    public void cantCreateBadNewPersonLastName() {
+        // Click and get dialog window
+        window.button("add").click();
+        DialogFixture dialog = window.dialog();
+
+        // Type just 'John','Doe'
+        dialog.textBox("firstName").enterText("John");
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test that there are still no people
+        window.table().requireRowCount(0);
+    }
+
+    /**
+     * This will test that the AddressBook GUI will
+     * successfully allow the user to edit a person.
+     */
     @Test
     public void canEditPerson() {
         // Load sample address Book
@@ -170,6 +225,9 @@ public class AddressBookGUITest {
                         { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
+    /**
+     * This test case will test if the GUI allows person to be deleted.
+     */
     @Test
     public void canDeletePerson() {
         // Click 'open' item
@@ -197,6 +255,10 @@ public class AddressBookGUITest {
                 new String[][] { { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
+    /**
+     * This test case will test if the AddressBook GUI
+     * will allow user to cancel adding a new person.
+     */
     @Test
     public void canCreateNewPersonCancelled() {
         // Click and get dialog window
@@ -213,6 +275,10 @@ public class AddressBookGUITest {
         window.table().requireRowCount(0);
     }
 
+    /**
+     * This testcase will test GUI will allow the user
+     * to cancel editing a person.
+     */
     @Test
     public void canEditPersonCancelled() {
         // Load sample address Book
@@ -240,6 +306,11 @@ public class AddressBookGUITest {
                         { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
+    /**
+     * This is a functional test to check if the
+     * AddressBookGUI will not allow edit to work
+     * if there is no row selected.
+     */
     @Test
     public void canEditPersonNoRowSelected() {
         // Load sample address Book
@@ -256,6 +327,11 @@ public class AddressBookGUITest {
         window.button("edit").requireFocused();
     }
 
+    /**
+     * This ia a functional test to test if
+     * AddressBook GUI will not allow user to delete
+     * a person if there is no row seleceted
+     */
     @Test
     public void canDeletePersonNoRowSelected() {
         // Click 'open' item

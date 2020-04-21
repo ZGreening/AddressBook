@@ -16,11 +16,16 @@ import org.junit.rules.TemporaryFolder;
 
 public class FileSystemTest {
 
+    //Temporary Folder provides a mock fileDirectory that deletes when Program ends
     @Rule
     public static TemporaryFolder folder = new TemporaryFolder();
     private static AddressBook addressBook = null; //An generic address book
     private static File file = null;           //A java file for testing
 
+    /**
+     * This method runs before before each test begins
+     * @throws IOException if file cannot be read or written
+     */
     @BeforeEach
     public void init() throws IOException {
         //Create a new address book each time
@@ -35,6 +40,10 @@ public class FileSystemTest {
     //                                 TESTS                                 //
     ///////////////////////////////////////////////////////////////////////////
 
+    /**
+     * This testcase will test if an error is thrown
+     * if the program tries to read a deleted file
+     */
     @Test
     public void readNonExistingFile() {
         //Delete file
@@ -44,6 +53,10 @@ public class FileSystemTest {
         assertThrows(FileNotFoundException.class, () -> FileSystem.readFile(addressBook,file));
     }
 
+    /**
+     * This test checks if exception is thrown if
+     * an unreadable file is read
+     */
     @Test
     public void readUnreadableFile() {
         //Make an unreadable mock file
@@ -54,6 +67,10 @@ public class FileSystemTest {
         assertThrows(FileNotFoundException.class, () -> FileSystem.readFile(addressBook,file));
     }
 
+    /**
+     * This testcase will test if SQLException is thrown
+     * a file read is not a valid file.
+     */
     @Test
     public void readNonSQLFile() {
         //Write some bytes that are not SQLite formatted
@@ -67,6 +84,10 @@ public class FileSystemTest {
         assertThrows(SQLException.class, () -> FileSystem.readFile(addressBook,file));
     }
 
+    /**
+     * This test will test that the program will be able to
+     * save a blank address book.
+     */
     @Test
     public void saveBlankAddressBook() {
         //Test that file was saved correctly
@@ -74,6 +95,9 @@ public class FileSystemTest {
         assertTrue(file.exists()); //Check file exists on disk
     }
 
+    /**
+     * This test case will test if the program will read a blank file.
+     */
     @Test
     public void readBlankAddressBook() {
         //This should not throw an error, if this errors, so will TEST saveBlankAddressBook()
@@ -88,6 +112,9 @@ public class FileSystemTest {
         assertTrue(addressBook.getPersons().length==0); 
     }
 
+    /**
+     * This test case will test the program saving a valid address book.
+     */
     @Test
     public void saveNormalAddressBook() {
         //Add two people to address book
@@ -99,6 +126,9 @@ public class FileSystemTest {
         assertTrue(file.exists()); //Check file exists on disk
     }
 
+    /**
+     * This test case will test the program will open a valid file
+     */
     @Test
     public void readNormalAddressBook() {
         //Add two people to address book and save
@@ -118,6 +148,10 @@ public class FileSystemTest {
         assertEquals("Doe, Jane",addressBook.getPersons()[1].toString());
     }
 
+    /**
+     * This test case will test that program will be able to
+     * successfully overwrite a saved file.
+     */
     @Test
     public void saveOverFile() {
         //Add two people to address book and save
