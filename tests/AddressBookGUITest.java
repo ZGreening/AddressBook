@@ -165,44 +165,6 @@ public class AddressBookGUITest {
     }
 
     /**
-     * This is a negative test to check behavior of when
-     * the GUI tries to add an invalid person.
-     * Invalid last name as well.
-     */
-    @Test
-    public void cantCreateBadNewPersonLastName() {
-        // Click and get dialog window
-        window.button("add").click();
-        DialogFixture dialog = window.dialog();
-
-        // Type just 'John'
-        dialog.textBox("firstName").enterText("John");
-
-        // Click 'OK'
-        dialog.button(JButtonMatcher.withText("OK")).click();
-
-        // Test that there are still no people
-        window.table().requireRowCount(0);
-    }
-    /**
-     * This is a negative test to check behavior of when
-     * the GUI tries to add an invalid person.
-     * No Inputs submitted.
-     */
-    @Test
-    public void cantCreateWithNoInputs() {
-        // Click and get dialog window
-        window.button("add").click();
-        DialogFixture dialog = window.dialog();
-
-        // Click 'OK'
-        dialog.button(JButtonMatcher.withText("OK")).click();
-
-        // Test that there are still no people
-        window.table().requireRowCount(0);
-    }
-
-    /**
      * This will test that the AddressBook GUI will
      * successfully allow the user to edit a person.
      */

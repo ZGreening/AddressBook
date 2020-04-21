@@ -92,30 +92,32 @@ public class PersonTest
   /**
    * PairWise Testing
    *  Will Test that 2 letters are valid input for state,
-   *  and the person is created
+   *  and the person is created.
+   *  Lower and UpperCase are valid.
    */
   @ParameterizedTest(name = "#{index} - Person Test with state: {4}")
   @CsvSource({
       "Joel, Masters,  420 Yeehaw Avenue, LeeHigh Anchors,FL, 33901, 0123456789",
-      "Mary, Po,  931 DisneyStreet, Orlando,MA, 33123, 0987654321",
+      "Mary, Po,  931 DisneyStreet, Orlando,mA, 33123, 0987654321",
       "Hersey, Chocolate,  931 CandyLane, CandyIsland, OH, 33123, 0545689410",
       "DoughBoy, PillsBerry,  931 CandyLane, CandyIsland, NJ, 33123, 1800123460"
   })
-  void statePassesRegexIf2AlphaCharacterAreEntered(String firstName, String lastName, String address, String city, String state, String zip,
+  void validStateInputs2LetterCodesAreEntered(String firstName, String lastName, String address, String city, String state, String zip,
       String phone) {
     assertNotNull(new Person(firstName,lastName,address,city,state,zip,phone));
   }
 
   /**
    * PairWise Testing
-   *  Tests that if state isn't 2 letters, an exception is thrown
+   *  Tests that if state isn't 2 letters, an exception is thrown.
+   *  State must also match 2 Letter US code, which these tests fail.
    */
   @ParameterizedTest(name = "#{index} - Person Test with state: {4}")
   @CsvSource({
-      "Joel, Masters,  420 Yeehaw Avenue, LeeHigh Anchors,FL2, 33901, 0123456789",
-      "Mary, Po,  931 DisneyStreet, Orlando,ma, 33123, 0987654321",
-      "Hersey, Chocolate,  931 CandyLane, CandyIsland, H, 33123, 0545689410",
-      "DoughBoy, PillsBerry,  931 CandyLane, CandyIsland, New Jersey, 33123, 1800123460"
+      "Joel, Masters,  420 Yeehaw Avenue, LeeHigh Anchors,12, 33901, 0123456789",
+      "Mary, Po,  931 DisneyStreet, Orlando,A|, 33123, 0987654321",
+      "Hersey, Chocolate,  931 CandyLane, CandyIsland, NO, 33123, 0545689410",
+      "DoughBoy, PillsBerry,  931 CandyLane, CandyIsland, New Jersey, 33123, 1800123460",
   })
   void invalidStateInputThrowsException(String firstName, String lastName, String address, String city, String state, String zip,
       String phone){
@@ -182,6 +184,20 @@ public class PersonTest
   }
 
   /**
+   * Tests that empty input for name, throws exception.
+   */
+  @Test
+  void emptyFirstNameThrowsException(){
+    Exception exception=assertThrows(IllegalArgumentException.class, () ->  new Person("","Bread","012 SwampStreet","Swamp","OH","51065","0123456789"));
+
+    String expectedMessage = "First name cannot be empty";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+
+  }
+
+  /**
    * PairWise Testing
    * Tests if last name is a valid input, then person can be created.
    * Last Name must be at least 2 characters can have numbers or letters.
@@ -234,6 +250,19 @@ public class PersonTest
     String actualMessage = exception.getMessage();
 
     assertTrue(actualMessage.contains(expectedMessage));
+  }
+  /**
+   * Tests that empty input for last name, throws exception.
+   */
+  @Test
+  void emptyLastNameThrowsException(){
+    Exception exception=assertThrows(IllegalArgumentException.class, () ->  new Person("Ginger","","012 SwampStreet","Swamp","OH","51065","0123456789"));
+
+    String expectedMessage = "Last name cannot be empty";
+    String actualMessage = exception.getMessage();
+
+    assertTrue(actualMessage.contains(expectedMessage));
+
   }
 
   /**
