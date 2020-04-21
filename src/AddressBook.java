@@ -41,13 +41,17 @@ public class AddressBook extends AbstractTableModel {
 
     /**
      * Sets the person at the given index to the Person specified.
+     * Code changed to add person !=null to fix bug
      *
      * @param index  The table index of the person to update.
      * @param person Person to replace index location with.
      */
     public void set(int index, Person person) {
-        persons.set(index, person);
-        fireTableRowsUpdated(index, index);
+        if (person!=null){
+            persons.set(index, person);
+            fireTableRowsUpdated(index, index);
+        }
+
     }
 
     /**
@@ -64,7 +68,7 @@ public class AddressBook extends AbstractTableModel {
      * Clears this address book persons list and updates the tables.
      */
     public void clear() {
-        if (persons == null || persons.isEmpty()) {
+        if (persons.isEmpty()) {
             return;
         }
 
