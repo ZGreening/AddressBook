@@ -65,6 +65,14 @@ public class Person {
         if (!checkRegex(state, "[A-Z]{2,2}")) {
             throw new IllegalArgumentException("State Must be 2 Characters");
         }
+
+        if (!checkRegex(address, "^[a-zA-Z0-9 ]{2,50}")) {
+            throw new IllegalArgumentException("Address requires at least 2 characters.");
+        }
+        if (!checkRegex(city, "^[a-zA-Z0-9 ]{2,50}")) {
+            throw new IllegalArgumentException("City requires at least 2 characters.");
+        }
+
         if (!checkRegex(zip, "\\d{5}")) {
             throw new IllegalArgumentException("ZipCode Must be 5 numbers");
         }

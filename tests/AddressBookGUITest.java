@@ -175,8 +175,25 @@ public class AddressBookGUITest {
         window.button("add").click();
         DialogFixture dialog = window.dialog();
 
-        // Type just 'John','Doe'
+        // Type just 'John'
         dialog.textBox("firstName").enterText("John");
+
+        // Click 'OK'
+        dialog.button(JButtonMatcher.withText("OK")).click();
+
+        // Test that there are still no people
+        window.table().requireRowCount(0);
+    }
+    /**
+     * This is a negative test to check behavior of when
+     * the GUI tries to add an invalid person.
+     * No Inputs submitted.
+     */
+    @Test
+    public void cantCreateWithNoInputs() {
+        // Click and get dialog window
+        window.button("add").click();
+        DialogFixture dialog = window.dialog();
 
         // Click 'OK'
         dialog.button(JButtonMatcher.withText("OK")).click();
@@ -350,6 +367,10 @@ public class AddressBookGUITest {
         window.table().requireRowCount(2);
     }
 
+    /**
+     * This is a functional test to test that the
+     * program will allow user to start a new addressbook.
+     */
     @Test
     public void canStartNewBook() {
         // Check that new item is clickable
@@ -366,6 +387,11 @@ public class AddressBookGUITest {
         saveAndSaveAsMatchEnabledState();
     }
 
+    /**
+     * This test will test if program will allow
+     * opening a blank AddressBok file.
+     * @throws IOException when file cannot be read
+     */
     @Test
     public void canOpenExistingBookBlankFile() throws IOException {
         // Check that open item is clickable
@@ -390,6 +416,10 @@ public class AddressBookGUITest {
         testFile.delete();
     }
 
+    /**
+     * This tests that the program will be able to
+     * open a valid address book.
+     */
     @Test
     public void canOpenExistingBook() {
         // Check that open item is clickable
@@ -413,6 +443,10 @@ public class AddressBookGUITest {
         saveAndSaveAsMatchEnabledState();
     }
 
+    /**
+     * Tests that canceling from the save menu
+     * successfully works.
+     */
     @Test
     public void canOpenExistingBookCancelled() {
         // Check that open item is clickable
@@ -430,6 +464,10 @@ public class AddressBookGUITest {
         window.table().requireRowCount(0);
     }
 
+    /**
+     * This tests checks if program can successfully
+     * overwrite a file with a valid addressbook.
+     */
     @Test
     public void canSaveNewBookOverAnother() {
         // Add a person to a new book
@@ -482,6 +520,11 @@ public class AddressBookGUITest {
         window.dialog().button(JButtonMatcher.withText("Yes")).click();
     }
 
+    /**
+     * This functional test will test if program can
+     * save a addressbook that has been edited.
+     * @throws IOException when file cannot be written
+     */
     @Test
     public void canSaveEditedBook() throws IOException {
         // Load sample address Book
@@ -516,6 +559,11 @@ public class AddressBookGUITest {
         assertTrue(file.exists());
     }
 
+    /**
+     * This tests will check that cancel function works
+     * when opting to cancel before saving.
+     * @throws IOException
+     */
     @Test
     public void canSaveEditedBookCancelled() throws IOException {
         // Load sample address Book
@@ -546,6 +594,9 @@ public class AddressBookGUITest {
         assertFalse(file.exists());
     }
 
+    /**
+     * This tests that the print functionality works.
+     */
     @Test
     public void canPrintBook() {
         // Load sample address Book
@@ -562,6 +613,10 @@ public class AddressBookGUITest {
         window.dialog().requireVisible();
     }
 
+    /**
+     * Tests that exception will be thrown is printing fails.
+     * @throws PrinterException when print fails
+     */
     @Test
     public void errorShowsOnPrintFail() throws PrinterException {
         // Clear the started program
@@ -593,6 +648,11 @@ public class AddressBookGUITest {
         window.optionPane().requireWarningMessage();
     }
 
+    /**
+     * This test will test that the program will open up
+     * an error message if a save is unsuccessful.
+     * @throws SQLException if database cannot be connected.
+     */
     // NOTE: this test will appear to display incorrectly while running.
     // This is due to the way the GUI has been replaced. The test still
     // functions correctly
@@ -645,6 +705,10 @@ public class AddressBookGUITest {
         window.optionPane().requireErrorMessage();
     }
 
+    /**
+     * This tests that dialogbox will popup if the program
+     * tries to clear the addressbook with "new" button
+     */
     @Test
     public void confirmDialogShowsOnNew() {
         // Load sample address Book
@@ -687,6 +751,10 @@ public class AddressBookGUITest {
         window.dialog().button(JButtonMatcher.withText("Yes")).click();
     }
 
+    /**
+     * Tests that a dialog box will popup if the "open" is pressed
+     * after an edit is made to the address book.
+     */
     @Test
     public void confirmDialogShowsOnOpen() {
         // Load sample address Book
@@ -729,6 +797,10 @@ public class AddressBookGUITest {
         window.dialog().button(JButtonMatcher.withText("Yes")).click();
     }
 
+    /**
+     * Tests that no dialog box will appear when ""quit" is pressed
+     * when no edits have been made to address book.
+     */
     @Test
     public void noConfirmDialogIfNothingChanged() {
         // Load sample address Book
@@ -746,6 +818,10 @@ public class AddressBookGUITest {
         assertThrows(Exception.class, () -> window.optionPane());
     }
 
+    /**
+     * Test that when DialogBox pops up, pressing cancel
+     * will not close program
+     */
     @Test
     public void confirmDialogShowsOnQuitCancel() {
         // Remove no exit so that window dispatch event line can run (Needed for 100%
@@ -782,6 +858,10 @@ public class AddressBookGUITest {
         window.optionPane().buttonWithText("No").click();
     }
 
+    /**
+     * Tests that pressing "Yes" on the Dialog Box
+     * will close the program
+     */
     @Test
     public void confirmDialogShowsOnWindowCloseConfirm() {
         // Load sample address Book
@@ -813,6 +893,10 @@ public class AddressBookGUITest {
         window.optionPane().buttonWithText("Yes").click();
     }
 
+    /**
+     * This functional test will test that the search box
+     * will filter out address book base on query
+     */
     @Test
     public void canSearchPeople() {
         // Load sample address Book
@@ -847,6 +931,9 @@ public class AddressBookGUITest {
                         { "Doe", "Jane", "1234 SomeStreet", "SomeCity", "FL", "12345", "1234567890" } });
     }
 
+    /**
+     * This tests that save function is disabled when program starts.
+     */
     @Test
     public void saveIsDisabledByDefault() {
         // Check if saving is disabled
@@ -856,6 +943,10 @@ public class AddressBookGUITest {
         saveAndSaveAsMatchEnabledState();
     }
 
+    /**
+     * This functional test will test that program is opened properly
+     * @throws ClassNotFoundException
+     */
     @Test
     public void programLaunchesCorrectly() throws ClassNotFoundException {
         // Get robot
@@ -876,6 +967,9 @@ public class AddressBookGUITest {
         }).using(robot);
     }
 
+    /**
+     * Tests that save and saveas buttons are matching states.
+     */
     @Test
     public void saveAndSaveAsMatchEnabledState() {
         // Check if save and saveAs match enabled state

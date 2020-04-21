@@ -44,7 +44,7 @@ class AddressBookTest {
   public void setNewPersonToAddressBook(){
     //Given index, change personList with new Person
     Person test_Person2 = new Person("Sweet","Tea",
-        "19964 Miami Beach","Miami,Ohio","OH","85012","2321232010");
+        "19964 Miami Beach","Miami","OH","85012","2321232010");
     test_AddressBook.add(test_Person);
     test_AddressBook.set(0,test_Person2);
     //Person[] personArray= test_AddressBook.getPersons();
@@ -59,7 +59,7 @@ class AddressBookTest {
   public void setNewPersonToEmptyListThrowsError(){
     //Given index, change personList with new Person
     Person test_Person2 = new Person("Sweet","Tea",
-        "19964 Miami Beach","Miami,Ohio","OH","85012","2321232010");
+        "19964 Miami Beach","Miami","OH","85012","2321232010");
     assertEquals(0,test_AddressBook.getPersons().length);
     assertThrows(IndexOutOfBoundsException.class,()->test_AddressBook.set(0,test_Person2));
   }
@@ -108,7 +108,7 @@ class AddressBookTest {
     //Given an index delete person from arrayList
     test_AddressBook.add(test_Person);
     Person test_Person2 = new Person("Steely","Phil",
-        "19964 Miami Beach","Miami,Ohio","OH","85012","2321232100");
+        "19964 Miami Beach","Miami","OH","85012","2321232100");
     test_AddressBook.add(test_Person2);
     test_AddressBook.remove(0);
     boolean isInArray = false;
@@ -204,7 +204,7 @@ class AddressBookTest {
   void getValueAt() {
     test_AddressBook.add(test_Person);
     Person test_Person2 = new Person("Steely","Phil",
-        "19964 Miami Beach","Miami,Ohio","OH","85012","2321232100");
+        "19964 Miami Beach","Miami","OH","85012","2321232100");
 
     test_AddressBook.add(test_Person2);
     assertEquals("Chincinnati",  test_AddressBook.getValueAt(0,3));
