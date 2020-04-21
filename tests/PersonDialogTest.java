@@ -95,19 +95,19 @@ class PersonDialogTest {
         Person person = personDialog.getPerson();
 
         // Check persons values
-        assertEquals(person.getFirstName(), "John");
-        assertEquals(person.getLastName(), "Doe");
-        assertEquals(person.getAddress(), "1234 SomeStreet");
-        assertEquals(person.getCity(), "SomeCity");
-        assertEquals(person.getState(), "FL");
-        assertEquals(person.getZip(), "12345");
-        assertEquals(person.getPhone(), "1234567890");
+        assertEquals( "John", person.getFirstName());
+        assertEquals("Doe", person.getLastName());
+        assertEquals("1234 SomeStreet", person.getAddress());
+        assertEquals("SomeCity", person.getCity());
+        assertEquals("FL", person.getState());
+        assertEquals("12345", person.getZip());
+        assertEquals("1234567890", person.getPhone());
 
         // Click 'OK' (execute lambda)
         window.button(JButtonMatcher.withText("OK")).click();
 
         // Check dialog result is OK
-        assertEquals(personDialog.getResult(), PersonDialog.Result.OK);
+        assertEquals(PersonDialog.Result.OK, personDialog.getResult());
     }
 
     /**
@@ -120,13 +120,17 @@ class PersonDialogTest {
         window.textBox("lastName").enterText("67890");
 
         // Check persons is null
-        assertEquals(personDialog.getPerson(), null);
+        assertEquals(null, personDialog.getPerson());
 
         // Click 'OK'
         window.button(JButtonMatcher.withText("OK")).click();
 
-        // Check dialog result is OK
-        assertEquals(personDialog.getResult(), PersonDialog.Result.OK);
+        // Check dialog result is was cancel still
+        assertEquals(PersonDialog.Result.CANCEL, personDialog.getResult());
+
+        //Check text fields are still filled
+        window.textBox("firstName").requireText("12345");
+        window.textBox("lastName").requireText("67890");
     }
 
     /**
@@ -141,11 +145,11 @@ class PersonDialogTest {
         window.button(JButtonMatcher.withText("Cancel")).click();
 
         // Check dialog result is Cancel
-        assertEquals(personDialog.getResult(), PersonDialog.Result.CANCEL);
+        assertEquals(PersonDialog.Result.CANCEL, personDialog.getResult());
     }
 
     /**
-     * Tests that person dialog text fields will bbe
+     * Tests that person dialog text fields will be
      * filled with data of a person selected.
      */
     @Test
