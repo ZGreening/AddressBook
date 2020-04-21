@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class AddressBook extends AbstractTableModel {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L; //For serialization
     private transient ArrayList<Person> persons = new ArrayList<>();
 
     /**
