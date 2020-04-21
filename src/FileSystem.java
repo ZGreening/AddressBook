@@ -2,7 +2,16 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
 
+/**
+ * A static filesystem class to save/load address books to/from file.
+ */
 public class FileSystem {
+
+    /**
+     * A private constructor to prevent instantiation
+     */
+    private FileSystem() {
+    }
 
     /**
      * A function to read the data out of an existing AddressBook saved on disk.
@@ -22,25 +31,21 @@ public class FileSystem {
         }
 
         // Connect SQL database and execute query to retrieve data
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-        Statement statement = connection.createStatement();
-        ResultSet rs = statement
-                .executeQuery("SELECT lastName, firstName, address, city, state, zip, phone FROM persons");
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+                Statement statement = connection.createStatement();
+                ResultSet rs = statement
+                        .executeQuery("SELECT lastName, firstName, address, city, state, zip, phone FROM persons");) {
 
-        // Clear the current AddressBook contents
-        addressBook.clear();
+            // Clear the current AddressBook contents
+            addressBook.clear();
 
-        // Iterate through all the records, adding them to the AddressBook
-        while (rs.next()) {
-            Person p = new Person(rs.getString("firstName"), rs.getString("lastName"), rs.getString("address"),
-                    rs.getString("city"), rs.getString("state"), rs.getString("zip"), rs.getString("phone"));
-            addressBook.add(p);
+            // Iterate through all the records, adding them to the AddressBook
+            while (rs.next()) {
+                Person p = new Person(rs.getString("firstName"), rs.getString("lastName"), rs.getString("address"),
+                        rs.getString("city"), rs.getString("state"), rs.getString("zip"), rs.getString("phone"));
+                addressBook.add(p);
+            }
         }
-
-        // Close DB connection
-        statement.close();
-        rs.close();
-        connection.close();
     }
 
     /**
@@ -54,31 +59,28 @@ public class FileSystem {
      */
     public static void saveFile(AddressBook addressBook, File file) throws SQLException {
         // Initialize database connection
-        Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
-        Statement statement = connection.createStatement();
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
+                Statement statement = connection.createStatement();) {
 
-        // Drop any data in the file
-        statement.execute("DROP TABLE IF EXISTS persons");
+            // Drop any data in the file
+            statement.execute("DROP TABLE IF EXISTS persons");
 
-        // Prepare table for storing data
-        statement.execute(
-                "CREATE TABLE persons (firstName TEXT, lastName TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, phone TEXT)");
+            // Prepare table for storing data
+            statement.execute(
+                    "CREATE TABLE persons (firstName TEXT, lastName TEXT, address TEXT, city TEXT, state TEXT, zip TEXT, phone TEXT)");
 
-        // Prepare a statement for database insertion
-        PreparedStatement insert = connection.prepareStatement(
-                "INSERT INTO persons (lastName, firstName, address, city, state, zip, phone) VALUES (?, ?, ?, ?, ?, ?, ?)");
-
-        // Iterate through all people and all their data fields to insert them into the
-        // file database on disk
-        for (Person p : addressBook.getPersons()) {
-            for (int i = 0; i < Person.fields.length; i++) {
-                insert.setString(i + 1, p.getField(i));
+            // Prepare a statement for database insertion
+            try (PreparedStatement insert = connection.prepareStatement(
+                    "INSERT INTO persons (lastName, firstName, address, city, state, zip, phone) VALUES (?, ?, ?, ?, ?, ?, ?)");) {
+                // Iterate through all people and all their data fields to insert them into the
+                // file database on disk
+                for (Person p : addressBook.getPersons()) {
+                    for (int i = 0; i < Person.fields.length; i++) {
+                        insert.setString(i + 1, p.getField(i));
+                    }
+                    insert.executeUpdate();
+                }
             }
-            insert.executeUpdate();
         }
-
-        // Close database resources
-        statement.close();
-        connection.close();
     }
 }
