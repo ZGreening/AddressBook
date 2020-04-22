@@ -66,6 +66,7 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
+     * Component Testing
      * This test case mocks the AddressBook, to test if it's method is ran
      */
     @Test
@@ -97,6 +98,7 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
+     * Component Testing
      * This test verifies that Mocked AddressBook set method is ran
      */
     @Test
@@ -132,6 +134,7 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
+     * Component Testing
      * This method mocks the AddressBook to verify the remove function is performed.
      */
     @Test
@@ -161,6 +164,7 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
+     * Component Testing
      * This method stubs a address book, to return a set value "person mock" to
      * verify the method is called.
      */
@@ -201,6 +205,7 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
+     * Component Testing
      * This method uses a addressBook mock to check if clear method is called.
      */
     @Test

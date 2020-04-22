@@ -19,7 +19,7 @@ public class PersonTest
   Person test_Person = new Person("John","Doe","123 Fake Street","Fort Myers","FL","33901","0123456789");
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    *  This test case will that the 10 digit number for PhoneNumber
    *  allows a success person to be created.
    */
@@ -36,7 +36,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning and Negative Testing
    *  This test case will tests that exception is thrown if phone number
    *  is not 10 consecutive numbers.
    */
@@ -54,7 +54,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    *  This test case will that the 10 digit number for PhoneNumber
    *  allows a success person to be created.
    */
@@ -72,7 +72,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning and negative testing
    *  This test case will tests that exception is thrown
    *  if zip is not 5 consecutive numbers.
    */
@@ -90,7 +90,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    *  Will Test that 2 letters are valid input for state,
    *  and the person is created.
    *  Lower and UpperCase are valid.
@@ -108,7 +108,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning and Negative Testing
    *  Tests that if state isn't 2 letters, an exception is thrown.
    *  State must also match 2 Letter US code, which these tests fail.
    */
@@ -125,7 +125,7 @@ public class PersonTest
     }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    * Tests if first name is a valid input, then person can be created.
    * First Name must be at least 2 characters can have numbers or letters.
    */
@@ -143,7 +143,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning and Negative Testing
    *Tests invalid first names, that will throw an exception.
    */
   @ParameterizedTest(name = "#{index} - Person Test with first name: {0}")
@@ -163,7 +163,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning and Negative Testing
    *Tests invalid first names, that will throw an exception.
    * This case for null inputs.
    */
@@ -184,6 +184,7 @@ public class PersonTest
   }
 
   /**
+   * Negative Testing
    * Tests that empty input for name, throws exception.
    */
   @Test
@@ -198,7 +199,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    * Tests if last name is a valid input, then person can be created.
    * Last Name must be at least 2 characters can have numbers or letters.
    */
@@ -216,6 +217,7 @@ public class PersonTest
   }
 
   /**
+   * Negative Testing
    *Tests invalid last names, that will throw an exception.
    */
   @ParameterizedTest(name = "#{index} - Person Test with first name: {1}")
@@ -234,6 +236,7 @@ public class PersonTest
     assertTrue(actualMessage.contains(expectedMessage));
   }
   /**
+   * Negative Testing
    *Tests invalid last names, that will throw an exception.
    * This case tests null input.
    */
@@ -252,6 +255,7 @@ public class PersonTest
     assertTrue(actualMessage.contains(expectedMessage));
   }
   /**
+   * Negative Testing
    * Tests that empty input for last name, throws exception.
    */
   @Test
@@ -266,7 +270,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    * Tests if  City is a valid input, then person can be created.
    * City are Valid if input is 2-40 alphanumeric characters, spaces allowed.
    */
@@ -284,7 +288,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning, Negative Testing
    * Tests that exception is thrown if city isn't the right length.
    */
   @ParameterizedTest(name = "#{index} - Person Test with city: {3}")
@@ -306,7 +310,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning
    * Tests if  address is a valid input, then person can be created.
    * Address are Valid if field is 2-40 alphanumeric characters, spaces allowed.
    */
@@ -324,7 +328,7 @@ public class PersonTest
   }
 
   /**
-   * PairWise Testing
+   * Equivalence Partitioning, negative testing
    * Tests that exception is thrown if Address isn't the right length
    */
   @ParameterizedTest(name = "#{index} - Person Test with address: {2}")
@@ -347,6 +351,7 @@ public class PersonTest
 
 
   /**
+   * Functional Test
    * Tests first name is returned.
    */
   @Test
@@ -355,6 +360,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Test
    * Tests last name is returned.
    */
   @Test
@@ -363,6 +369,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Test
    * Tests Address is returned.
    */
   @Test
@@ -371,6 +378,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Test
    * Tests City is returned.
    */
   @Test
@@ -379,6 +387,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Test
    * Tests State is returned.
    */
   @Test
@@ -387,6 +396,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Test
    * Tests zip is returned.
    */
   @Test
@@ -395,6 +405,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Test
    * Tests phone is returned
    */
   @Test
@@ -403,7 +414,8 @@ public class PersonTest
   }
 
   /**
-   * This test case tests the constainString method.
+   * Funtional Test
+   * This test case tests the containsString method.
    * Each field of person is tested to ensure that
    * search bar will be able to find the person object.
    */
@@ -420,6 +432,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Testing
    * This test cases tests the getField method
    * to ensure the correct data is returned.
    */
@@ -437,6 +450,7 @@ public class PersonTest
   }
 
   /**
+   * Functional Testing
    * This method tests the output of toString method.
    */
   @Test

@@ -49,6 +49,7 @@ class AddressBookIntegrationTest {
 
     @Test
     /**
+     * Component Testing
      * This test case is a stub will use a Person mock to force a custom return
      * value.
      */
@@ -61,6 +62,7 @@ class AddressBookIntegrationTest {
     }
 
     /**
+     * Positive Testing
      * This test will use a spy of Person class to test that correct value is
      * retrieved from person
      */

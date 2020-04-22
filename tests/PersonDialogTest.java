@@ -37,7 +37,7 @@ class PersonDialogTest {
         // Prevent program exiting
         NoExitSecurityManagerInstaller.installNoExitSecurityManager();
 
-        // Required for full AssertJ GUI testing
+        // Required for full AssertJ User Interface Testing
         FailOnThreadViolationRepaintManager.install();
     }
 
@@ -77,6 +77,7 @@ class PersonDialogTest {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Functional Testing and User Interface Testing
      * Test that the program will add a valid person.
      */
     @Test
@@ -111,6 +112,7 @@ class PersonDialogTest {
     }
 
     /**
+     * Functional Resting, Negative Testing and User Interface Testing
      * Test that a invalid person is not added to addressBook.
      */
     @Test
@@ -134,6 +136,7 @@ class PersonDialogTest {
     }
 
     /**
+     * Functional Testing and User Interface Testing
      * Tests the PersonDialog will exit will cancel button is pressed.
      */
     @Test
@@ -149,6 +152,7 @@ class PersonDialogTest {
     }
 
     /**
+     * Functional Testing and User Interface Testing
      * Tests that person dialog text fields will be
      * filled with data of a person selected.
      */
