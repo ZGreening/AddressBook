@@ -37,6 +37,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case will test that a new person will replace a person
    * already in the Address Book.
    */
@@ -52,6 +53,7 @@ class AddressBookTest {
 
   }
   /**
+   * Functional Testing and Negative
    * This test case will throw an error if set method is
    * called on a empty AddressBook
    */
@@ -65,6 +67,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Negative Testing
    * This test case will test that calling set with a null person
    * will not enter the AddressBook or change the table
    */
@@ -78,6 +81,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case will test if new person is successfully added in Address Book.
    */
   @Test
@@ -87,6 +91,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test will check getPersons will return the Array of the
    * current persons List
    */
@@ -101,6 +106,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case tests if a person is successfully removed from Person List.
    */
   @Test
@@ -128,6 +134,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Negative Testing
    * This is a negative test case to test if Out of Bounds exception
    * is thrown if removing on empty list
    */
@@ -137,6 +144,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This method checks if the correct person is returned by get method.
    */
   @Test
@@ -146,6 +154,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test cases will test if AddressBook Clears all people from the list.
    */
   @Test
@@ -153,17 +162,9 @@ class AddressBookTest {
     test_AddressBook.clear();
     assertTrue(test_AddressBook.getPersons().length ==0);
   }
-  @Test
-  void clearOnNullList(){
-    test_AddressBook.add(test_Person);
-    test_AddressBook.remove(0);
-    test_AddressBook.clear();
-    //test_AddressBook.add(test_Person);
-    //test_AddressBook.getPersons()=null;
-    //test_AddressBook.clear();
-  }
 
   /**
+   * Functional Testing and Positive Testing
    * This test cases will test if AddressBook Clears all people from the list.
    */
   @Test
@@ -174,6 +175,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case tests if rowCount is giving the correct data.
    * The row count is equal to the number of entries in AddressBook.
    */
@@ -186,6 +188,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case will test if the column number is correct.
    * The column number is equal to number of fields of Person class, which
    * should be 7.
@@ -196,6 +199,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case will verify if the right information is given about a person
    * in the Address Book.
    * Two indexes are given, first will point to the Person, the second is the field.
@@ -213,6 +217,7 @@ class AddressBookTest {
   }
 
   /**
+   * Functional Testing and Positive Testing
    * This test case will test if the column name is correct.
    * column name is the Person class's field member variable
    */

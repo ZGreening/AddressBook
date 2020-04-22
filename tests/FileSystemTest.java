@@ -42,6 +42,7 @@ public class FileSystemTest {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Functional Testing
      * This testcase will test if an error is thrown
      * if the program tries to read a deleted file
      */
@@ -55,6 +56,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Functional Testing and Negative Testing
      * This test checks if exception is thrown if
      * an unreadable file is read
      */
@@ -69,6 +71,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Functional Testing and Negative Testing
      * This testcase will test if SQLException is thrown
      * a file read is not a valid file.
      */
@@ -86,6 +89,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Functional Testing and Positive Testing
      * This test will test that the program will be able to
      * save a blank address book.
      */
@@ -97,6 +101,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Functional Testing and Positive Testing
      * This test case will test if the program will read a blank file.
      */
     @Test
@@ -114,6 +119,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Functional Testing and Positive Testing
      * This test case will test the program saving a valid address book.
      */
     @Test @Timeout(value=120000) //120 seconds, two minutes max time to access database
@@ -128,6 +134,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Function Testing and Positive Testing
      * This test case will test the program will open a valid file
      */
     @Test @Timeout(value=120000) //120 seconds, two minutes max time to access database
@@ -150,6 +157,7 @@ public class FileSystemTest {
     }
 
     /**
+     * Functional Testing and Positive testing
      * This test case will test that program will be able to
      * successfully overwrite a saved file.
      */

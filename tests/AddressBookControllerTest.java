@@ -50,6 +50,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This test case test will test if a person is successful added to Address
      * Book.
      */
@@ -60,6 +61,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This case tests set method. Given an index a person object will be replaced
      * with a new person object.
      */
@@ -73,6 +75,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Negative Testing
      * This is a negative test case that will throw an Exception if the method tries
      * to set a new person on a index that doesn't exist.
      */
@@ -82,6 +85,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This test case will test that a person will be removed from Address Book.
      */
     @Test
@@ -106,6 +110,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Negative Testing
      * This is a negative test case to test that test that an Error is thrown if the
      * method tries to remove a person from a empty Person list.
      */
@@ -115,6 +120,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This test case will test if AddressBook Controller will successfully add a
      * person.
      */
@@ -125,6 +131,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Negative Testing
      * This is a exception test which should throw an error if get method is called
      * when list is empty
      */
@@ -134,6 +141,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This test case test if Address Book list will clear, given there is a person
      * already in the Address Book
      */
@@ -150,6 +158,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This test case will test if program can open a normal file. The testing of
      * file system is for the FileSystem test class thus, the test here will be a
      * simple case of seeing if a acceptable file will open.
@@ -169,6 +178,7 @@ class AddressBookControllerTest {
     }
 
     /**
+     * Functional and Positive Testing
      * This test case will check if program will be able to successfully save a
      * file.
      */

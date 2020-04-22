@@ -77,6 +77,7 @@ class PersonDialogTest {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * Functional Testing and GUI Test
      * Test that the program will add a valid person.
      */
     @Test
@@ -111,6 +112,7 @@ class PersonDialogTest {
     }
 
     /**
+     * Functional Resting, Negative Testing and GUI Test
      * Test that a invalid person is not added to addressBook.
      */
     @Test
@@ -134,6 +136,7 @@ class PersonDialogTest {
     }
 
     /**
+     * Functional Testing and GUI Test
      * Tests the PersonDialog will exit will cancel button is pressed.
      */
     @Test
@@ -149,6 +152,7 @@ class PersonDialogTest {
     }
 
     /**
+     * Funtional Testing and GUI Test
      * Tests that person dialog text fields will be
      * filled with data of a person selected.
      */
