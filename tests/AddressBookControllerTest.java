@@ -50,9 +50,8 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This test case test will test if a person is successful added to Address
-     * Book.
+     * Functional and Positive Testing. This test case test will test if a person is
+     * successful added to Address Book.
      */
     @Test
     void addPersonToList() {
@@ -61,9 +60,8 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This case tests set method. Given an index a person object will be replaced
-     * with a new person object.
+     * Functional and Positive Testing. This case tests set method. Given an index a
+     * person object will be replaced with a new person object.
      */
     @Test
     void setWithOnePersonInList() {
@@ -75,9 +73,9 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Negative Testing
-     * This is a negative test case that will throw an Exception if the method tries
-     * to set a new person on a index that doesn't exist.
+     * Functional and Negative Testing. This is a negative test case that will throw
+     * an Exception if the method tries to set a new person on a index that doesn't
+     * exist.
      */
     @Test
     void setWithEmptyListShouldThrowError() {
@@ -85,8 +83,8 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This test case will test that a person will be removed from Address Book.
+     * Functional and Positive Testing. This test case will test that a person will
+     * be removed from Address Book.
      */
     @Test
     void removePersonFromListAndListWillNotBeEmpty() {
@@ -110,9 +108,9 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Negative Testing
-     * This is a negative test case to test that test that an Error is thrown if the
-     * method tries to remove a person from a empty Person list.
+     * Functional and Negative Testing. This is a negative test case to test that
+     * test that an Error is thrown if the method tries to remove a person from a
+     * empty Person list.
      */
     @Test
     void removeOnEmptyListShouldThrowError() {
@@ -120,9 +118,8 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This test case will test if AddressBook Controller will successfully add a
-     * person.
+     * Functional and Positive Testing. This test case will test if AddressBook
+     * Controller will successfully add a person.
      */
     @Test
     void getPersonOnNonEmptyList() {
@@ -131,9 +128,8 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Negative Testing
-     * This is a exception test which should throw an error if get method is called
-     * when list is empty
+     * Functional and Negative Testing. This is a exception test which should throw
+     * an error if get method is called when list is empty
      */
     @Test
     void getOnEmptyListShouldThrowError() {
@@ -141,9 +137,8 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This test case test if Address Book list will clear, given there is a person
-     * already in the Address Book
+     * Functional and Positive Testing. This test case test if Address Book list
+     * will clear, given there is a person already in the Address Book
      */
     @Test
     void clearList() {
@@ -158,14 +153,13 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This test case will test if program can open a normal file. The testing of
-     * file system is for the FileSystem test class thus, the test here will be a
-     * simple case of seeing if a acceptable file will open.
+     * Functional and Positive Testing. This test case will test if program can open
+     * a normal file. The testing of file system is for the FileSystem test class
+     * thus, the test here will be a simple case of seeing if a acceptable file will
+     * open.
      */
     @Test
     public void openValidFile() throws IOException {
-
         // Create a new file for testing each time
         folder.create();
         file = folder.newFile("MyTestFile");
@@ -178,13 +172,11 @@ class AddressBookControllerTest {
     }
 
     /**
-     * Functional and Positive Testing
-     * This test case will check if program will be able to successfully save a
-     * file.
+     * Functional and Positive Testing This test case will check if program will be
+     * able to successfully save a file.
      */
     @Test
     public void saveValidFile() throws IOException {
-
         // Create a new file for testing each time
         folder.create();
         file = folder.newFile("MyTestFile");

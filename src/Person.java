@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class Person {
 
     // List of field names for address book
-    public static final String[] fields = { "Last Name", "First Name", "Address", "City", "State", "ZIP", "Phone" };
+    protected static final String[] fields = { "Last Name", "First Name", "Address", "City", "State", "ZIP", "Phone" };
 
     // Person fields
     private String firstName;
@@ -19,23 +19,25 @@ public class Person {
     private String zip;
     private String phone;
 
-
     private static String states = "|AL|AK|AS|AZ|AR|CA|CO|CT|DE|DC|FM|FL|GA|GU|HI|ID|IL|IN|IA|KS|KY|LA|ME|MH|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|MP|OH|OK|OR|PW|PA|PR|RI|SC|SD|TN|TX|UT|VT|VI|VA|WA|WV|WI|WY|";
 
     /**
      * Helper function to check valid state 2 letter code.
+     * 
      * @param state query to be checked
      * @return Boolean True is valid state code, false if not
      */
-    public static boolean isStateAbbreviation (String state)
-    {
-        //Avoid | Being added as input, as it would lead to a false positive.
-        if (state.contains("|")){
+    private static boolean isStateAbbreviation(String state) {
+        // Avoid | Being added as input, as it would lead to a false positive.
+        if (state.contains("|")) {
             return false;
         }
 
-        state=state.toUpperCase();
-        return state.length() == 2 && states.indexOf( state ) > 0;
+        // Change to uppercase for comparison
+        state = state.toUpperCase();
+
+        // Index of returns -1 if nothing found 0 could be considered valid
+        return state.length() == 2 && states.indexOf(state) >= 0;
     }
 
     /**
@@ -61,13 +63,11 @@ public class Person {
      * @param phone     The person's phone number
      * @throws IllegalArgumentException Thrown if parameters for person creation
      *                                  were incorrect. Person name must be at least
-     *                                  2 chars long.
-     *                                  State must be two capital
-     *                                  letter and valid State Code.
-     *                                  City must be 2-40 Letters.
-     *                                  Address must be 2-40 Letters.
-     *                                  Zip must be 5 numbers.
-     *                                  Phone must be 10 numbers.
+     *                                  2 chars long. State must be two capital
+     *                                  letter and valid State Code. City must be
+     *                                  2-40 Letters. Address must be 2-40 Letters.
+     *                                  Zip must be 5 numbers. Phone must be 10
+     *                                  numbers.
      */
     public Person(String firstName, String lastName, String address, String city, String state, String zip,
             String phone) {
@@ -88,14 +88,12 @@ public class Person {
         if (!isStateAbbreviation(state)) {
             throw new IllegalArgumentException("State Must be 2 Letter Code.");
         }
-
         if (!checkRegex(address, "^[a-zA-Z0-9 ]{2,50}")) {
             throw new IllegalArgumentException("Address requires at least 2 characters.");
         }
         if (!checkRegex(city, "^[a-zA-Z0-9 ]{2,50}")) {
             throw new IllegalArgumentException("City requires at least 2 characters.");
         }
-
         if (!checkRegex(zip, "\\d{5}")) {
             throw new IllegalArgumentException("ZipCode Must be 5 numbers");
         }

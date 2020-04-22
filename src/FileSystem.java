@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
 
 /**
@@ -19,10 +20,9 @@ public class FileSystem {
      * 
      * @param addressBook The AddressBook to read the data into.
      * @param file        The file to read the data from.
-     * @throws SQLException          Thrown if the data in the file is not in the
-     *                               expected SQL format
-     * @throws FileNotFoundException Thrown if the file does not exist or is
-     *                               unreadable
+     * @throws SQLException Thrown if the data in the file is not in the expected
+     *                      SQL format
+     * @throws IOException
      */
     public static void readFile(AddressBook addressBook, File file) throws SQLException, FileNotFoundException {
         // Throw exception if the file is not usable or doesn't exist

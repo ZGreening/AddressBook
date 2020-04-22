@@ -66,14 +66,15 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
-     * Component Testing
-     * This test case mocks the AddressBook, to test if it's method is ran
+     * Component Testing. This test case mocks the AddressBook, to test if it's
+     * method is ran
      */
     @Test
     public void addPersonToAddressBookMock() {
         // Mockito method of handling void return functions
         doNothing().when(addressBook_mock).add(isA(Person.class));
 
+        // Add mock
         controllerTest.add(person_mock);
 
         // Verify method is called
@@ -90,7 +91,7 @@ class AddressBookControllerIntegrationTest {
         controllerTest = new AddressBookController(addressBook_spy);
         controllerTest.add(person_mock);
 
-        // verify method was hit
+        // Verify method was hit
         verify(addressBook_spy).add(isA(Person.class));
 
         // Verify Person added to ArrayList
@@ -98,11 +99,12 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
-     * Component Testing
-     * This test verifies that Mocked AddressBook set method is ran
+     * Component Testing. This test verifies that Mocked AddressBook set method is
+     * ran
      */
     @Test
     public void setPersonToAddressBookMock() {
+        // Prepare mock
         doNothing().when(addressBook_mock).set(isA(int.class), isA(Person.class));
         controllerTest.set(0, person_mock);
 
@@ -116,26 +118,27 @@ class AddressBookControllerIntegrationTest {
      */
     @Test
     public void setPersonToAddressBookSpy() {
+        // Get new address book with spy
         controllerTest = new AddressBookController(addressBook_spy);
 
         // Add a test person first
         controllerTest.add(person_mock);
 
         // Create new person
-        Person test_Person2 = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Chincinnati", "OH", "43123",
+        Person test_Person2 = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Cincinnati", "OH", "43123",
                 "0123456789");
 
         // Replace old with new person
         controllerTest.set(0, test_Person2);
 
-        // verify methodd was called
+        // verify method was called
         verify(addressBook_spy).set(isA(int.class), isA(Person.class));
         assertEquals("Dorian, Jane", addressBook_spy.get(0).toString());
     }
 
     /**
-     * Component Testing
-     * This method mocks the AddressBook to verify the remove function is performed.
+     * Component Testing. This method mocks the AddressBook to verify the remove
+     * function is performed.
      */
     @Test
     public void removePersonFromAddressBookMock() {
@@ -164,9 +167,8 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
-     * Component Testing
-     * This method stubs a address book, to return a set value "person mock" to
-     * verify the method is called.
+     * Component Testing. This method stubs a address book, to return a set value
+     * "person mock" to verify the method is called.
      */
     @Test
     public void getPersonFromAddressBookStub() {
@@ -205,8 +207,8 @@ class AddressBookControllerIntegrationTest {
     }
 
     /**
-     * Component Testing
-     * This method uses a addressBook mock to check if clear method is called.
+     * Component Testing. This method uses a addressBook mock to check if clear
+     * method is called.
      */
     @Test
     public void clearAddressMock() {
@@ -268,21 +270,17 @@ class AddressBookControllerIntegrationTest {
         controllerTest = new AddressBookController(addressBook_spy);
         folder.create(); // Create test folder
         final File file = folder.newFile("MyTestFile");// Create test file
-        try {
-            Person test_Person2 = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Cincinnati", "OH", "43123",
-                    "0123456789");
-            addressBook_spy.add(test_Person2);
+        Person test_Person2 = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Cincinnati", "OH", "43123",
+                "0123456789");
+        addressBook_spy.add(test_Person2);
 
-            // Save file first
-            assertDoesNotThrow(() -> controllerTest.save(file));
+        // Save file first
+        assertDoesNotThrow(() -> controllerTest.save(file));
 
-            // Then Open it
-            assertDoesNotThrow(() -> controllerTest.open(file));
+        // Then Open it
+        assertDoesNotThrow(() -> controllerTest.open(file));
 
-            // Check if Information is same
-            assertEquals("Dorian, Jane", addressBook_spy.get(0).toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Check if Information is same
+        assertEquals("Dorian, Jane", addressBook_spy.get(0).toString());
     }
 }

@@ -9,8 +9,8 @@ import java.io.File;
 import java.util.regex.Pattern;
 
 /**
- * The main program gui. This class sets up the swing application
- * layout and adds the lambda functionality to them.
+ * The main program gui. This class sets up the swing application layout and
+ * adds the lambda functionality to them.
  */
 public class AddressBookGUI extends JFrame {
 
@@ -25,11 +25,11 @@ public class AddressBookGUI extends JFrame {
         });
     }
 
-    private static final long serialVersionUID = 1L; //For serialization
+    private static final long serialVersionUID = 1L; // For serialization
     private AddressBook addressBook = new AddressBook();
     private transient AddressBookController controller = new AddressBookController(addressBook);
     private JTable nameList = new JTable(addressBook);
-    private final transient TableRowSorter<AddressBook> tableRowSorter = new TableRowSorter<>(addressBook);;
+    private final transient TableRowSorter<AddressBook> tableRowSorter = new TableRowSorter<>(addressBook);
     private final JButton addButton = new JButton("Add...");
     private final JButton editButton = new JButton("Edit...");
     private final JButton deleteButton = new JButton("Delete");
@@ -41,13 +41,14 @@ public class AddressBookGUI extends JFrame {
     private final JMenuItem quitItem = new JMenuItem("Exit", 'X');
     private final JTextField searchTextField = new JTextField("");
 
-    //The file to save
+    // The file to save
     private File currentFile = null;
 
     /**
      * Used for tests NOTE: using package protection not public
+     * 
      * @param addressBook For passing in a mock/spy
-     * @param controller For passing in a mock/spy
+     * @param controller  For passing in a mock/spy
      */
     AddressBookGUI(AddressBook addressBook, AddressBookController controller) {
         this();
@@ -57,6 +58,7 @@ public class AddressBookGUI extends JFrame {
 
     /**
      * Used for tests NOTE: using package protection not public
+     * 
      * @param table For passing in a mock/spy
      */
     AddressBookGUI(JTable table) {
@@ -65,8 +67,8 @@ public class AddressBookGUI extends JFrame {
     }
 
     /**
-     * The main constructor for creating the GUI. This function initializes all
-     * the gui components style and lambda functionality.
+     * The main constructor for creating the GUI. This function initializes all the
+     * gui components style and lambda functionality.
      */
     public AddressBookGUI() {
         // Give names for GUI components
@@ -88,15 +90,15 @@ public class AddressBookGUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane(nameList);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-        //Create a menu bar
+        // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
 
-        //Create file menu button in the bar
+        // Create file menu button in the bar
         JMenu file = new JMenu("File");
         file.setMnemonic('F');
         file.setName("file");
 
-        //Give new item functionality and add it to file menu bar
+        // Give new item functionality and add it to file menu bar
         newItem.addActionListener(e -> {
             if (saveItem.isEnabled() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to create a new address book? Any unsaved progress will be lost.",
@@ -108,7 +110,7 @@ public class AddressBookGUI extends JFrame {
         });
         file.add(newItem);
 
-        //Give open item functionality and add it to file menu bar
+        // Give open item functionality and add it to file menu bar
         openItem.addActionListener(e -> {
             if (saveItem.isEnabled() && JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to open a different address book? Any unsaved progress will be lost.",
@@ -130,7 +132,7 @@ public class AddressBookGUI extends JFrame {
         });
         file.add(openItem);
 
-        //Give save item functionality and add it to file menu bar
+        // Give save item functionality and add it to file menu bar
         saveItem.setEnabled(false);
         saveItem.addActionListener(e -> {
             if (currentFile == null) {
@@ -145,13 +147,12 @@ public class AddressBookGUI extends JFrame {
                         JOptionPane.ERROR_MESSAGE);
             }
         });
-        saveItem.addChangeListener(e -> {
-            // Set saveAsItem with the same state as saveItem
-            saveAsItem.setEnabled(saveItem.isEnabled());
-        });
+
+        // Set saveAsItem with the same state as saveItem
+        saveItem.addChangeListener(e -> saveAsItem.setEnabled(saveItem.isEnabled()));
         file.add(saveItem);
 
-        //Give save as item functionality and add it to file menu bar
+        // Give save as item functionality and add it to file menu bar
         saveAsItem.setEnabled(false);
         saveAsItem.addActionListener(e -> {
             final JFileChooser jfc = new JFileChooser();
@@ -170,10 +171,10 @@ public class AddressBookGUI extends JFrame {
         });
         file.add(saveAsItem);
 
-        //Separate next item
+        // Separate next item
         file.add(new JSeparator());
 
-        //Give print item functionality and add it to file menu bar
+        // Give print item functionality and add it to file menu bar
         printItem.addActionListener(e -> {
             try {
                 nameList.print();
@@ -184,19 +185,19 @@ public class AddressBookGUI extends JFrame {
         });
         file.add(printItem);
 
-        //Separate next item
+        // Separate next item
         file.add(new JSeparator());
 
-        //Give quit item functionality and add it to file menu bar
+        // Give quit item functionality and add it to file menu bar
         quitItem.addActionListener(e -> dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
         file.add(quitItem);
 
-        //Add file menu item, and search text box label to menu bar
+        // Add file menu item, and search text box label to menu bar
         menuBar.add(file);
         menuBar.add(new JSeparator());
         menuBar.add(new JLabel("Search: "));
 
-        //Add search text box functionality and 
+        // Add search text box functionality and
         searchTextField.setMaximumSize(new Dimension(15000, 50));
         searchTextField.getDocument().addDocumentListener(new DocumentListener() {
             // Listen to the Document so the list filters immediately
@@ -218,23 +219,22 @@ public class AddressBookGUI extends JFrame {
         });
         menuBar.add(searchTextField);
 
-        //Create panel with add, edit, and delete button functionality
+        // Create panel with add, edit, and delete button functionality
         JPanel addEditDelPanel = new JPanel();
-        
-        //Create add button
+
+        // Create add button
         addButton.setMnemonic('A');
         addButton.addActionListener(e -> {
             PersonDialog dialog = new PersonDialog(this);
             dialog.setVisible(true);
-            if (dialog.getResult() != PersonDialog.Result.OK || dialog.getPerson() == null) {
+            if (dialog.getResult() != PersonDialog.Result.OK)
                 return;
-            }
             controller.add(dialog.getPerson());
             saveItem.setEnabled(true);
         });
         addEditDelPanel.add(addButton);
 
-        //Create edit button
+        // Create edit button
         editButton.setMnemonic('E');
         editButton.addActionListener(e -> {
             int selectedRow = nameList.getSelectedRow();
@@ -253,7 +253,7 @@ public class AddressBookGUI extends JFrame {
         });
         addEditDelPanel.add(editButton);
 
-        //Create delete button
+        // Create delete button
         deleteButton.setMnemonic('D');
         deleteButton.addActionListener(e -> {
             int selectedRow = nameList.getSelectedRow();
@@ -277,7 +277,8 @@ public class AddressBookGUI extends JFrame {
         setTitle("Address Book");
         setJMenuBar(menuBar);
 
-        //Listen for window closing events to interrupt and check for unsaved data if necessary
+        // Listen for window closing events to interrupt and check for unsaved data if
+        // necessary
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

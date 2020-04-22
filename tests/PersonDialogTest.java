@@ -18,9 +18,8 @@ import java.io.IOException;
 import javax.swing.JFrame;
 
 /**
- * PersonDialogTest.java
- * This test class tests PersonDialog Class
- * This class uses AssertJ to run automated testing.
+ * PersonDialogTest.java This test class tests PersonDialog Class This class
+ * uses AssertJ to run automated testing.
  */
 class PersonDialogTest {
 
@@ -43,7 +42,8 @@ class PersonDialogTest {
 
     /**
      * This method runs after init() and before each test method.
-     * @throws IOException when a file cannot be read or saved.
+     * 
+     * @throws IOException            when a file cannot be read or saved.
      * @throws ClassNotFoundException when Class cannot be found.
      */
     @BeforeEach
@@ -73,12 +73,12 @@ class PersonDialogTest {
     }
 
     ///////////////////////////////////////////////////////////////////////////
-    //                              UNIT TESTS                               //
+    // UNIT TESTS //
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     * Functional Testing and User Interface Testing
-     * Test that the program will add a valid person.
+     * Functional Testing and User Interface Testing. Test that the program will add
+     * a valid person.
      */
     @Test
     void getValidPerson() {
@@ -96,7 +96,7 @@ class PersonDialogTest {
         Person person = personDialog.getPerson();
 
         // Check persons values
-        assertEquals( "John", person.getFirstName());
+        assertEquals("John", person.getFirstName());
         assertEquals("Doe", person.getLastName());
         assertEquals("1234 SomeStreet", person.getAddress());
         assertEquals("SomeCity", person.getCity());
@@ -112,8 +112,8 @@ class PersonDialogTest {
     }
 
     /**
-     * Functional Resting, Negative Testing and User Interface Testing
-     * Test that a invalid person is not added to addressBook.
+     * Functional Testing, Negative Testing and User Interface Testing. Test that a
+     * invalid person is not added to addressBook.
      */
     @Test
     void addPersonInvalid() {
@@ -130,14 +130,14 @@ class PersonDialogTest {
         // Check dialog result is was cancel still
         assertEquals(PersonDialog.Result.CANCEL, personDialog.getResult());
 
-        //Check text fields are still filled
+        // Check text fields are still filled
         window.textBox("firstName").requireText("12345");
         window.textBox("lastName").requireText("67890");
     }
 
     /**
-     * Functional Testing and User Interface Testing
-     * Tests the PersonDialog will exit will cancel button is pressed.
+     * Functional Testing and User Interface Testing. Tests the PersonDialog will
+     * exit will cancel button is pressed.
      */
     @Test
     void addPersonCancel() {
@@ -152,9 +152,8 @@ class PersonDialogTest {
     }
 
     /**
-     * Functional Testing and User Interface Testing
-     * Tests that person dialog text fields will be
-     * filled with data of a person selected.
+     * Functional Testing and User Interface Testing. Tests that person dialog text
+     * fields will be filled with data of a person selected.
      */
     @Test
     void openWithPerson() {

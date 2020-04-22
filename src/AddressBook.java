@@ -8,7 +8,7 @@ import javax.swing.table.AbstractTableModel;
  */
 public class AddressBook extends AbstractTableModel {
 
-    private static final long serialVersionUID = 1L; //For serialization
+    private static final long serialVersionUID = 1L; // For serialization
     private transient ArrayList<Person> persons = new ArrayList<>();
 
     /**
@@ -40,14 +40,14 @@ public class AddressBook extends AbstractTableModel {
     }
 
     /**
-     * Sets the person at the given index to the Person specified.
-     * Code changed to add person !=null to fix bug
+     * Sets the person at the given index to the Person specified. Code changed to
+     * add person !=null to fix bug
      *
      * @param index  The table index of the person to update.
      * @param person Person to replace index location with.
      */
     public void set(int index, Person person) {
-        if (person!=null){
+        if (person != null) {
             persons.set(index, person);
             fireTableRowsUpdated(index, index);
         }

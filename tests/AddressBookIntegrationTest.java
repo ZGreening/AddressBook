@@ -24,10 +24,10 @@ class AddressBookIntegrationTest {
     Person person_mock; // Person Mock
     Person person_spy;// person spy
 
-    @BeforeEach
     /**
      * This method runs first before each test.
      */
+    @BeforeEach
     void setUp() {
         test_Person = new Person("Jane", "Dorian", "987 Westbrook Blvd", "Cincinnati", "OH", "43123", "0123456789");
         test_AddressBook = new AddressBook();
@@ -47,12 +47,11 @@ class AddressBookIntegrationTest {
         person_spy = null;
     }
 
-    @Test
     /**
-     * Component Testing
-     * This test case is a stub will use a Person mock to force a custom return
-     * value.
+     * Component Testing. This test case is a stub will use a Person mock to force a
+     * custom return value.
      */
+    @Test
     public void getValueAtStub() {
         test_AddressBook.add(person_mock);
         when(person_mock.getField(0)).thenReturn("Sheldon");
@@ -62,9 +61,8 @@ class AddressBookIntegrationTest {
     }
 
     /**
-     * Positive Testing
-     * This test will use a spy of Person class to test that correct value is
-     * retrieved from person
+     * Positive Testing. This test will use a spy of Person class to test that
+     * correct value is retrieved from person
      */
     @Test
     public void getValueAtSpy() {
