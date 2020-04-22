@@ -113,6 +113,7 @@ public class AddressBookGUITest {
     ///////////////////////////////////////////////////////////////////////////
 
     /**
+     * User Interface Testing and Positive Test
      * This is automated test that will open the window
      * and create a valid new person.
      */
@@ -144,6 +145,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Negative Test
      * This is a negative test to check behavior of when
      * the GUI tries to add an invalid person
      */
@@ -165,6 +167,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This will test that the AddressBook GUI will
      * successfully allow the user to edit a person.
      */
@@ -205,6 +208,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This test case will test if the GUI allows person to be deleted.
      */
     @Test
@@ -235,6 +239,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This test case will test if the AddressBook GUI
      * will allow user to cancel adding a new person.
      */
@@ -255,6 +260,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This testcase will test GUI will allow the user
      * to cancel editing a person.
      */
@@ -286,6 +292,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Negative Test
      * This is a functional test to check if the
      * AddressBookGUI will not allow edit to work
      * if there is no row selected.
@@ -307,6 +314,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing
      * This ia a functional test to test if
      * AddressBook GUI will not allow user to delete
      * a person if there is no row seleceted
@@ -330,6 +338,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This is a functional test to test that the
      * program will allow user to start a new addressbook.
      */
@@ -350,6 +359,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This test will test if program will allow
      * opening a blank AddressBok file.
      * @throws IOException when file cannot be read
@@ -379,6 +389,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This tests that the program will be able to
      * open a valid address book.
      */
@@ -406,6 +417,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * Tests that canceling from the save menu
      * successfully works.
      */
@@ -427,6 +439,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This tests checks if program can successfully
      * overwrite a file with a valid addressbook.
      */
@@ -483,6 +496,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This functional test will test if program can
      * save a addressbook that has been edited.
      * @throws IOException when file cannot be written
@@ -522,6 +536,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This tests will check that cancel function works
      * when opting to cancel before saving.
      * @throws IOException
@@ -557,6 +572,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This tests that the print functionality works.
      */
     @Test
@@ -576,6 +592,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Negative Test
      * Tests that exception will be thrown is printing fails.
      * @throws PrinterException when print fails
      */
@@ -611,6 +628,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Negative Test
      * This test will test that the program will open up
      * an error message if a save is unsuccessful.
      * @throws SQLException if database cannot be connected.
@@ -668,6 +686,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This tests that dialogbox will popup if the program
      * tries to clear the addressbook with "new" button
      */
@@ -714,6 +733,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * Tests that a dialog box will popup if the "open" is pressed
      * after an edit is made to the address book.
      */
@@ -760,6 +780,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * Tests that no dialog box will appear when ""quit" is pressed
      * when no edits have been made to address book.
      */
@@ -781,6 +802,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * Test that when DialogBox pops up, pressing cancel
      * will not close program
      */
@@ -821,6 +843,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * Tests that pressing "Yes" on the Dialog Box
      * will close the program
      */
@@ -856,6 +879,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This functional test will test that the search box
      * will filter out address book base on query
      */
@@ -894,6 +918,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Positive Test
      * This tests that save function is disabled when program starts.
      */
     @Test
@@ -906,6 +931,7 @@ public class AddressBookGUITest {
     }
 
     /**
+     * User Interface Testing and Functional Test
      * This functional test will test that program is opened properly
      * @throws ClassNotFoundException
      */
@@ -930,7 +956,8 @@ public class AddressBookGUITest {
     }
 
     /**
-     * Tests that save and saveas buttons are matching states.
+     * Functional Test
+     * Tests that "save" and "save as" buttons are matching states.
      */
     @Test
     public void saveAndSaveAsMatchEnabledState() {
